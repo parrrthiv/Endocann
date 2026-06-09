@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EndoCann.in — Live Digital Clinic Backend-Ready Prototype</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+:root{
+  --green:#047857;--green2:#10b981;--mint:#eafaf3;--navy:#10233f;--blue:#175cd3;--sky:#eef6ff;
+  --gold:#f59e0b;--gold2:#fbbf24;--pink:#be185d;--rose:#fff1f2;--red:#be123c;
+  --ink:#101828;--muted:#667085;--line:#e5e7eb;--bg:#f7fbf9;--white:#fff;
+  --shadow:0 14px 34px rgba(16,35,63,.09);--soft:0 8px 22px rgba(16,35,63,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:82px}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+.app{max-width:640px;margin:auto;min-height:100vh;background:linear-gradient(#fff,#f5fbf8);position:relative}
+.top{position:sticky;top:0;z-index:30;background:#fffffff2;backdrop-filter:blur(16px);border-bottom:1px solid var(--line);padding:12px 15px;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;gap:10px;align-items:center}.logo{width:44px;height:44px;border-radius:17px;background:linear-gradient(135deg,var(--green),var(--navy));display:grid;place-items:center;color:#fff;box-shadow:0 10px 22px rgba(4,120,87,.20)}
+.logo svg{width:28px}.brand b{font-size:18px;letter-spacing:-.3px}.brand small{display:block;color:var(--muted);font-size:10.5px;font-weight:800}
+.live-pill{display:flex;align-items:center;gap:7px;background:var(--mint);color:var(--green);border:1px solid #bbf7d0;border-radius:999px;padding:8px 10px;font-size:11px;font-weight:900}
+.dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.55);animation:pulse 1.5s infinite}
+.dot.offline{background:#f59e0b;box-shadow:none;animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.screen{display:none;padding:0 14px 16px}.screen.on{display:block}
+.hero{padding:16px 0 8px}.badge{display:inline-flex;align-items:center;gap:6px;background:var(--mint);color:var(--green);font-size:11.5px;font-weight:900;border-radius:999px;padding:7px 10px;margin-bottom:10px}
+.badge.gold{background:#fff7ed;color:#9a5b00}.badge.blue{background:var(--sky);color:var(--blue)}
+h1{font-size:31px;line-height:1.02;letter-spacing:-1px;margin-bottom:8px}h1 span{color:var(--green)}
+h2{font-size:21px;margin:18px 0 7px;letter-spacing:-.35px}h3{font-size:16px;margin-bottom:5px}
+p{color:var(--muted);font-size:12.7px;line-height:1.44}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.banner{background:linear-gradient(135deg,#fff7ed,#ecfdf3);border:1px solid #fed7aa;border-radius:24px;padding:13px;margin:12px 0;box-shadow:var(--shadow)}
+.banner.deep{background:linear-gradient(135deg,var(--navy),var(--green));color:#fff;border:0}.banner.deep p,.banner.deep b,.banner.deep span{color:#fff}
+.banner-top{display:flex;gap:11px;align-items:flex-start}.banner-icon{width:50px;height:50px;border-radius:18px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:grid;place-items:center;color:#3b2400;font-size:21px;flex:0 0 auto}
+.banner.deep .banner-icon{background:#ffffff22;color:#fff}.banner b{font-size:16.5px;display:block;line-height:1.18}.banner span{font-size:11.7px;color:var(--muted);font-weight:800;line-height:1.3;display:block;margin-top:3px}
+.btn{width:100%;border:0;border-radius:17px;padding:13px 9px;margin-top:9px;font-size:12.8px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;box-shadow:0 12px 25px rgba(4,120,87,.18);line-height:1.16}
+.btn.light{background:#fff;color:var(--green);border:1px solid var(--line);box-shadow:none}.btn.whatsapp{background:linear-gradient(135deg,#16a34a,#22c55e)}.btn.blue{background:linear-gradient(135deg,var(--navy),var(--blue))}.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#412500}.btn.red{background:linear-gradient(135deg,#be123c,#e11d48)}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:13px;box-shadow:var(--shadow);cursor:pointer;transition:.2s ease}
+.card:hover{transform:translateY(-1px)}.card.cta{background:linear-gradient(135deg,var(--navy),var(--green));color:#fff;border:0}.card.cta b,.card.cta span,.card.cta p{color:#fff}.card.cta .ico{background:#ffffff22;color:#fff}
+.card.flagship{background:linear-gradient(135deg,#10233f,#047857 62%,#10b981);color:#fff;border:0}.card.flagship b,.card.flagship span{color:#fff}.card.flagship .ico{background:#ffffff24;color:#fff}
+.ico{width:43px;height:43px;border-radius:16px;background:var(--mint);display:grid;place-items:center;font-size:20px;color:var(--green);margin-bottom:9px}
+.card b{display:block;font-size:13.7px;line-height:1.2;margin-bottom:4px}.card span{display:block;color:var(--muted);font-size:11.15px;line-height:1.27}
+.panel{background:white;border:1px solid var(--line);border-radius:24px;padding:13px;box-shadow:var(--shadow);margin:12px 0}
+.panel.ai{background:linear-gradient(135deg,#eef6ff,#f7fbff);border-left:6px solid var(--blue)}.panel.verified{background:linear-gradient(135deg,#ecfdf3,#fff);border-left:6px solid var(--green)}.panel.warn{background:#fff7ed;border-left:6px solid var(--gold)}.panel.red{background:#fff1f2;border-left:6px solid #e11d48}
+.item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:11px;margin:7px 0;cursor:pointer}
+.item:hover{background:#fbfffd}.miniico{width:39px;height:39px;border-radius:14px;background:var(--mint);display:grid;place-items:center;font-size:17px;flex:0 0 auto;color:var(--green)}
+.item div{flex:1}.item b{font-size:13px;display:block}.item small{display:block;color:var(--muted);font-size:11.2px;margin-top:2px;line-height:1.25}
+.tag{background:var(--mint);color:var(--green);font-size:10px;font-weight:900;border-radius:999px;padding:5px 7px;white-space:nowrap}.tag.warn{background:#fff7ed;color:#b45309}.tag.blueTag{background:#eef6ff;color:#175cd3}.tag.redTag{background:#fff1f2;color:#be123c}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:9px;text-align:center;box-shadow:var(--soft)}.kpi b{display:block;font-size:18px;color:var(--navy)}.kpi small{color:var(--muted);font-size:10px;font-weight:900}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:11px 0}.tab{border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:14px;padding:10px 6px;font-size:11.6px;font-weight:900}.tab.on{background:var(--green);color:#fff;border-color:var(--green)}
+.flow{display:grid;gap:8px;margin:10px 0}.flowstep{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px;box-shadow:var(--soft)}
+.flowstep .num{width:34px;height:34px;border-radius:13px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900;flex:0 0 auto}.flowstep b{font-size:12.8px;display:block}.flowstep small{font-size:10.8px;color:var(--muted);display:block;margin-top:2px;line-height:1.25}
+.map{height:155px;border-radius:21px;background:linear-gradient(135deg,#eafaf3,#eef6ff);border:1px solid var(--line);position:relative;overflow:hidden;margin-top:10px}
+.map:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 49%,#d7e5ef 50%,transparent 51%),linear-gradient(0deg,transparent 49%,#d7e5ef 50%,transparent 51%);background-size:56px 56px;opacity:.7}.pin{position:absolute;left:57%;top:43%;transform:translate(-50%,-50%);font-size:36px;color:#e11d48;z-index:1;filter:drop-shadow(0 8px 10px rgba(0,0,0,.18))}
+input,select,textarea{width:100%;border:1px solid var(--line);border-radius:15px;padding:13px;margin-top:8px;font-size:14px;background:#fff;color:var(--ink)}textarea{min-height:74px;resize:none}
+.note{background:#fff7ed;border:1px solid #fed7aa;border-left:6px solid var(--gold);border-radius:18px;padding:12px;margin:10px 0;font-size:12px;font-weight:800;color:#7c3f00;line-height:1.35}.note.red{background:#fff1f2;border-color:#fecdd3;border-left-color:#e11d48;color:#9f1239}.note.green{background:#ecfdf3;border-color:#bbf7d0;border-left-color:var(--green);color:#065f46}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin:9px 0}.chip{background:var(--mint);color:var(--green);border:1px solid #c7f3df;font-size:10.5px;font-weight:900;border-radius:999px;padding:6px 8px}.chip.gold{background:#fff7ed;color:#9a5b00;border-color:#fed7aa}.chip.blue{background:var(--sky);color:var(--blue);border-color:#dbeafe}.chip.rose{background:var(--rose);color:var(--pink);border-color:#fbcfe8}
+.partner-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.partner{background:#fff;border:1px solid var(--line);border-radius:17px;padding:11px;display:flex;align-items:center;gap:9px;font-size:12px;font-weight:900}.partner i{color:var(--green)}
+.timeline{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:11px 0}.timebox{background:#fff;border:1px solid var(--line);border-radius:19px;padding:11px;text-align:center;box-shadow:var(--soft)}.timebox b{display:block;font-size:18px;color:var(--navy)}.timebox small{font-size:10.5px;color:var(--muted);font-weight:900;line-height:1.2;display:block;margin-top:3px}
+.progress{height:9px;background:#eef2f7;border-radius:999px;overflow:hidden;margin-top:8px}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--green2));border-radius:999px;transition:.5s ease}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);width:calc(100% - 28px);max-width:610px;background:#10233f;color:#fff;padding:12px 14px;border-radius:18px;box-shadow:0 14px 40px #0003;font-size:12px;font-weight:800;opacity:0;pointer-events:none;transition:.25s;z-index:80}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.modal{display:none;position:fixed;inset:0;background:#0009;z-index:60;align-items:end}.modal.on{display:flex}.sheet{width:100%;max-width:640px;margin:auto;background:#fff;border-radius:28px 28px 0 0;padding:18px;box-shadow:0 -12px 35px #0002;max-height:88vh;overflow:auto}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);z-index:40;display:flex;justify-content:center;box-shadow:0 -10px 30px rgba(16,39,66,.08)}.bar{max-width:640px;width:100%;display:grid;grid-template-columns:repeat(7,1fr);padding:6px}.nav{border:0;background:transparent;color:#64748b;font-size:9px;font-weight:900;border-radius:13px;padding:7px 3px}.nav i{display:block;font-size:15px;margin-bottom:3px}.nav.on{background:var(--mint);color:var(--green)}
+@media(max-width:380px){h1{font-size:29px}.grid2,.grid3{grid-template-columns:1fr}.timeline{grid-template-columns:1fr}.bar{grid-template-columns:repeat(3,1fr)}body{padding-bottom:120px}}
+@media print{body{padding:0;background:white}.top,.bottom,.modal,.toast,.no-print{display:none!important}.screen{display:block!important;padding:0}.screen:not(#investment):not(#home):not(#boards):not(#delivery){display:none!important}.app{max-width:100%;background:white}.panel,.card,.banner,.kpi,.flowstep{box-shadow:none;break-inside:avoid}button{display:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top no-print">
+  <div class="brand">
+    <div class="logo"><svg viewBox="0 0 64 64" fill="none"><path d="M49 13C29 15 16 28 17 48c20 1 34-12 36-32-8 4-16 10-24 21 4-12 11-20 20-24Z" fill="white"/><path d="M20 45c8-11 17-19 29-25" stroke="#0f2742" stroke-width="3" stroke-linecap="round" opacity=".35"/></svg></div>
+    <div><b>EndoCann.in</b><small>Live Digital Clinic</small></div>
+  </div>
+  <button class="live-pill" onclick="toggleBackendMode()"><span id="liveDot" class="dot offline"></span><span id="liveText">Mock Live</span></button>
+</header>
+
+<section id="home" class="screen on">
+  <div class="hero">
+    <span class="badge gold"><i class="fa-solid fa-bolt"></i> Backend-ready live prototype</span>
+    <h1><span>10-Minute Digital Clinic</span> — Ola/Uber-style doctor marketplace.</h1>
+    <p>When connected to backend, patients create live care requests and verified doctors can accept suitable cases, start consultation, use boards, prescribe after review and trigger delivery.</p>
+  </div>
+
+  <div class="timeline">
+    <div class="timebox"><b id="clinicCount">24</b><small>Digital clinics live</small></div>
+    <div class="timebox"><b id="queueCount">18</b><small>Patients in queue</small></div>
+    <div class="timebox"><b id="deliveryCount">7</b><small>Delivery orders active</small></div>
+  </div>
+
+  <div class="banner deep">
+    <div class="banner-top"><div class="banner-icon"><i class="fa-solid fa-heart-pulse"></i></div><div><b>Live care command centre</b><span id="liveSub">Simulated data is active. Connect API_BASE and WS_URL to make it live.</span></div></div>
+    <div class="grid2">
+      <button class="btn gold" onclick="go('doctor')"><i class="fa-solid fa-user-doctor"></i> Open Doctor Live Queue</button>
+      <button class="btn whatsapp" onclick="wa('Hello EndoCann, I want to start my 10-minute WhatsApp video consultation.')"><i class="fa-brands fa-whatsapp"></i> Start WhatsApp Video</button>
+    </div>
+  </div>
+
+  <div class="rowhead"><h2>Live flow status</h2><small id="lastSync">Syncing...</small></div>
+  <div class="flow" id="liveFlow"></div>
+
+  <div class="grid4">
+    <div class="card cta" onclick="go('doctor')"><div class="ico">👨‍⚕️</div><b>Doctor Dashboard</b><span>Live AI summary, red flags, queue</span></div>
+    <div class="card" onclick="go('patient')"><div class="ico">👤</div><b>Patient Dashboard</b><span>OTP, upload, board status</span></div>
+    <div class="card flagship" onclick="go('marketplace')"><div class="ico">🚕</div><b>Doctor Marketplace</b><span>Doctors accept live suitable patients</span></div>
+    <div class="card flagship" onclick="go('boards')"><div class="ico">🎗️</div><b>Boards / CancerQR</b><span>Multidisciplinary AI-assisted boards</span></div>
+    <div class="card" onclick="go('delivery')"><div class="ico">🚚</div><b>Delivery Tracking</b><span>Partner or in-house shipping</span></div>
+  </div>
+</section>
+
+<section id="doctor" class="screen">
+  <div class="hero">
+    <span class="badge blue"><i class="fa-solid fa-user-doctor"></i> Doctor command centre</span>
+    <h1>Live patient queue with <span>AI decision support.</span></h1>
+    <p>Backend-ready dashboard for patient queue, uploaded reports, AI summary, red flags, suggested questions, board routing and prescription draft after doctor approval.</p>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><b id="docKpiPatients">18</b><small>Patients</small></div>
+    <div class="kpi"><b id="docKpiReady">6</b><small>AI Ready</small></div>
+    <div class="kpi"><b id="docKpiFlags">3</b><small>Red Flags</small></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="doctorTab('dqueue',this)">Queue</button>
+    <button class="tab" onclick="doctorTab('dai',this)">AI Report</button>
+    <button class="tab" onclick="doctorTab('dactions',this)">Actions</button>
+  </div>
+
+  <div id="dqueue"><div class="panel"><h3>Live Patient Queue</h3><div id="patientQueue"></div><button class="btn whatsapp" onclick="wa('Hello EndoCann, open my doctor live queue.')"><i class="fa-brands fa-whatsapp"></i> Doctor WhatsApp Clinic</button></div></div>
+
+  <div id="dai" style="display:none">
+    <div class="panel ai"><h3>AI Generated Report Summary</h3><p id="aiSummary">Select a patient from queue.</p><div class="chips"><span id="aiBoard" class="chip blue">Board pending</span><span class="chip">AI-assisted</span><span class="chip gold">Doctor review required</span></div></div>
+    <div class="panel red"><h3>Red Flags</h3><p id="aiRedflags">Select a patient to view safety flags.</p></div>
+    <div class="panel warn"><h3>Important Notes</h3><p id="aiNotes">Uploaded reports, consent, allergies, medicine list and diagnosis timeline must be verified.</p></div>
+    <div class="panel verified"><h3>Suggested Questions</h3><p id="aiQuestions">Select a patient to view consultation questions.</p></div>
+  </div>
+
+  <div id="dactions" style="display:none">
+    <div class="panel">
+      <h3>Doctor Actions</h3>
+      <button class="btn blue" onclick="backendAction('board_review')"><i class="fa-solid fa-users-medical"></i> Send to Board Review</button>
+      <button class="btn light" onclick="backendAction('draft_rx')"><i class="fa-solid fa-file-prescription"></i> Create Prescription Draft</button>
+      <button class="btn whatsapp" onclick="backendAction('assistant_followup')"><i class="fa-brands fa-whatsapp"></i> Send to Assistant / Nurse</button>
+      <button class="btn gold" onclick="backendAction('approve_protocol')"><i class="fa-solid fa-check"></i> Approve Doctor Protocol</button>
+    </div>
+    <div class="panel">
+      <h3>Upload Channels</h3>
+      <div class="item"><div class="miniico">📤</div><div><b>Doctor login upload</b><small>Reports, prescriptions, scans, case sheets.</small></div><span class="tag">Web</span></div>
+      <div class="item"><div class="miniico"><i class="fa-brands fa-whatsapp"></i></div><div><b>WhatsApp upload</b><small>Files routed to backend case record.</small></div><span class="tag">Chat</span></div>
+      <div class="item"><div class="miniico">💬</div><div><b>Arattai upload</b><small>Indian chat upload path for patient reports.</small></div><span class="tag blueTag">India</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="patient" class="screen">
+  <div class="hero"><span class="badge"><i class="fa-solid fa-user"></i> Patient live space</span><h1>Upload reports and track <span>doctor-approved care.</span></h1><p>Patient flow for OTP login, report upload, AI summary status, assigned board, video consultation and delivery tracking.</p></div>
+  <div class="panel">
+    <h3>OTP Login</h3>
+    <input id="mobileInput" placeholder="Mobile number">
+    <button class="btn" onclick="sendOtp()"><i class="fa-solid fa-key"></i> Send OTP</button>
+  </div>
+  <div class="panel">
+    <h3>Upload Reports</h3>
+    <input type="file" id="fileUpload">
+    <textarea id="symptoms" placeholder="Symptoms, diagnosis, current medicines, old history, allergies."></textarea>
+    <button class="btn" onclick="uploadReport()"><i class="fa-solid fa-upload"></i> Upload to Case</button>
+    <button class="btn whatsapp" onclick="wa('Hello EndoCann, I want to upload my reports through WhatsApp.')"><i class="fa-brands fa-whatsapp"></i> Upload Through WhatsApp</button>
+    <button class="btn light" onclick="toast('Arattai upload link generated in prototype.')"><i class="fa-solid fa-comment-dots"></i> Upload Through Arattai</button>
+  </div>
+  <div class="panel verified">
+    <h3>Patient Status</h3>
+    <div id="patientStatus"></div>
+  </div>
+</section>
+
+<section id="boards" class="screen">
+  <div class="hero"><span class="badge gold"><i class="fa-solid fa-users-medical"></i> Boards</span><h1>Live multidisciplinary boards with <span>AI-assisted drafts.</span></h1><p>Boards can receive live cases from doctors and return physician-review drafts, red flags and follow-up recommendations.</p></div>
+  <div class="grid2">
+    <div class="card" onclick="openBoard('PCOD / Feminine Wellness / Fertility Board')"><div class="ico">🌸</div><b>PCOD / Fertility</b><span>Gynecologist, Ayurveda, functional medicine, IVF, dietician.</span></div>
+    <div class="card" onclick="openBoard('Pain / Inflammatory / Chronic Care Board')"><div class="ico">💊</div><b>Pain / Inflammatory</b><span>Rheumatologist, neurologist, immunology, pain specialist.</span></div>
+    <div class="card" onclick="openBoard('Stress / Sleep / Mind-Body Board')"><div class="ico">🧘</div><b>Stress / Sleep</b><span>Psychology, neurology, Ayurveda, lifestyle and nutrition.</span></div>
+    <div class="card flagship" onclick="openBoard('CancerQR AI-Assisted Tumor Board')"><div class="ico">🎗️</div><b>CancerQR Tumor Board</b><span>Supportive integrative care only. No cure claims.</span></div>
+  </div>
+  <div class="panel"><h3>Live Board Cases</h3><div id="boardCases"></div></div>
+  <div class="note red">Supportive integrative care only. No cure claims. Final treatment decisions remain with the treating oncologist/registered physician.</div>
+</section>
+
+
+<section id="marketplace" class="screen">
+  <div class="hero">
+    <span class="badge gold"><i class="fa-solid fa-taxi"></i> Ola/Uber-style doctor marketplace</span>
+    <h1>Private doctors can run their own <span>digital clinic fleet.</span></h1>
+    <p>Like Ola/Uber lets each taxi driver run privately inside one platform, EndoCann lets each verified doctor run their own digital clinic while patients send live care requests. As patient flow increases, available doctors can choose suitable patients and start consultation instantly.</p>
+  </div>
+
+  <div class="banner deep">
+    <div class="banner-top">
+      <div class="banner-icon"><i class="fa-solid fa-route"></i></div>
+      <div>
+        <b>Patient request → doctor accepts → video consult → board support → prescription → delivery</b>
+        <span>Doctors are independent providers. EndoCann provides routing, AI summary, board access, compliance workflow and delivery coordination.</span>
+      </div>
+    </div>
+    <div class="grid2">
+      <button class="btn gold" onclick="simulateNewRequest()"><i class="fa-solid fa-bell"></i> Simulate Patient Request</button>
+      <button class="btn whatsapp" onclick="wa('Hello EndoCann, I am a doctor and want to join the live patient-flow marketplace.')"><i class="fa-brands fa-whatsapp"></i> Join as Doctor</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><b id="marketRequests">11</b><small>Live Requests</small></div>
+    <div class="kpi"><b id="marketDoctors">8</b><small>Doctors Online</small></div>
+    <div class="kpi"><b id="marketWait">6m</b><small>Avg Wait</small></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" onclick="marketTab('requests',this)">Requests</button>
+    <button class="tab" onclick="marketTab('doctorsLive',this)">Doctors</button>
+    <button class="tab" onclick="marketTab('matching',this)">Matching</button>
+  </div>
+
+  <div id="requests">
+    <div class="panel">
+      <h3>Live Patient Requests</h3>
+      <div id="liveRequests"></div>
+    </div>
+  </div>
+
+  <div id="doctorsLive" style="display:none">
+    <div class="panel">
+      <h3>Doctors Online</h3>
+      <div id="liveDoctors"></div>
+    </div>
+  </div>
+
+  <div id="matching" style="display:none">
+    <div class="panel ai">
+      <h3>Smart Matching Rules</h3>
+      <div class="flow">
+        <div class="flowstep"><div class="num">1</div><div><b>Patient sends request</b><small>Symptoms, reports, city, language, preferred doctor type and urgency.</small></div></div>
+        <div class="flowstep"><div class="num">2</div><div><b>AI prepares case card</b><small>Summary, red flags, board suggestion, report gaps and consultation questions.</small></div></div>
+        <div class="flowstep"><div class="num">3</div><div><b>Doctors see suitable requests</b><small>Only verified and relevant doctors see matching patient requests.</small></div></div>
+        <div class="flowstep"><div class="num">4</div><div><b>Doctor accepts patient</b><small>Doctor can accept, request board review, schedule video or redirect emergency cases.</small></div></div>
+        <div class="flowstep"><div class="num">5</div><div><b>Care starts live</b><small>WhatsApp video, protocol draft, prescription review and delivery coordination.</small></div></div>
+      </div>
+    </div>
+
+    <div class="panel verified">
+      <h3>Doctor Independence Model</h3>
+      <div class="item"><div class="miniico">🚕</div><div><b>Like taxi driver autonomy</b><small>Each doctor runs their private digital clinic, timings, branding and patient selection.</small></div><span class="tag">Private</span></div>
+      <div class="item"><div class="miniico">🏥</div><div><b>Clinic inside marketplace</b><small>Doctor has own page, map location, WhatsApp, calendar, testimonials and package settings.</small></div><span class="tag blueTag">Clinic</span></div>
+      <div class="item"><div class="miniico">🧬</div><div><b>Optional board support</b><small>Doctor can use AI-assisted boards for complex cases while retaining final approval.</small></div><span class="tag warn">Board</span></div>
+      <div class="item"><div class="miniico">💊</div><div><b>Delivery layer</b><small>Doctor-approved prescription/product flow goes to pharmacy or in-house shipping.</small></div><span class="tag">Rx</span></div>
+    </div>
+
+    <div class="note red">Platform should not look like EndoCann is “assigning treatment automatically.” Safer wording: “verified doctors independently accept suitable patient requests; AI and boards assist; doctor makes final clinical decision.”</div>
+  </div>
+</section>
+
+
+<section id="delivery" class="screen">
+  <div class="hero"><span class="badge"><i class="fa-solid fa-truck-fast"></i> Delivery</span><h1>Live delivery tracking after <span>doctor approval.</span></h1><p>Delivery flow is backend-ready for pharmacy partner availability, stock, prescription compliance and in-house shipping.</p></div>
+  <div class="panel"><h3>Active Delivery Orders</h3><div id="deliveryOrders"></div></div>
+  <div class="panel"><h3>Planned Partner Layer</h3><div class="partner-grid">
+    <div class="partner"><i class="fa-solid fa-prescription-bottle-medical"></i>Aster Pharmacy</div><div class="partner"><i class="fa-solid fa-prescription-bottle-medical"></i>Apollo Pharmacy</div>
+    <div class="partner"><i class="fa-solid fa-capsules"></i>Tata 1mg</div><div class="partner"><i class="fa-solid fa-bolt"></i>Blinkit</div>
+    <div class="partner"><i class="fa-solid fa-truck-fast"></i>Zepto</div><div class="partner"><i class="fa-brands fa-amazon"></i>Amazon</div>
+    <div class="partner"><i class="fa-solid fa-cart-shopping"></i>Flipkart</div><div class="partner"><i class="fa-solid fa-box"></i>In-house shipping</div>
+  </div></div>
+  <div class="note">Delivery speed depends on city, pharmacy availability, prescription compliance, stock, and partner integration. 10-minute delivery is a target flow where quick-commerce/pharmacy coverage is available.</div>
+</section>
+
+<section id="investment" class="screen">
+  <div class="hero"><span class="badge gold"><i class="fa-solid fa-chart-line"></i> Investment</span><h1>Doctor Early Bird Onboarding / <span>Investment Proposal.</span></h1><p>Live clinic + board + delivery ecosystem designed for doctors, patients, pharmacies, city partners and investors.</p></div>
+  <div class="banner"><div class="banner-top"><div class="banner-icon"><i class="fa-solid fa-percent"></i></div><div><b>Doctor Early Bird Onboarding — 25% on Medicines</b><span>For verified doctors joining early digital clinic and board-enabled care pathways.</span></div></div><div class="grid2"><button class="btn gold" onclick="wa('Hello EndoCann, I am a doctor and want early bird onboarding with 25% medicine benefit details.')">Doctor Early Bird</button><button class="btn blue" onclick="window.print()">Investment Proposal / PDF</button></div></div>
+  <div class="panel verified"><h3>Why this can be category-creating</h3><div class="item"><div class="miniico">⚡</div><div><b>Digital clinic faster than a website</b><small>Map, WhatsApp, calendar, dashboard and board access in one flow.</small></div></div><div class="item"><div class="miniico">🤖</div><div><b>AI reduces doctor time</b><small>Summaries, red flags, suggested questions and protocol drafts.</small></div></div><div class="item"><div class="miniico">🚚</div><div><b>Delivery makes care convenient</b><small>Pharmacy, quick-commerce and in-house shipping layer.</small></div></div></div>
+  <div class="panel red"><h3>Risk & Compliance Controls</h3><div class="chips"><span class="chip rose">Doctor verification</span><span class="chip rose">Prescription validation</span><span class="chip rose">Data privacy / consent</span><span class="chip rose">No cure claims</span><span class="chip rose">AYUSH / medical review</span><span class="chip rose">Pharmacy compliance</span><span class="chip rose">Emergency routing</span><span class="chip rose">Human final approval</span></div></div>
+</section>
+
+</div>
+
+<div id="detail" class="modal no-print"><div class="sheet" id="detailBody"></div></div>
+<div id="toast" class="toast"></div>
+
+<div class="bottom no-print"><div class="bar">
+  <button class="nav on" onclick="go('home',this)"><i class="fa-solid fa-house"></i>Home</button>
+  <button class="nav" onclick="go('doctor',this)"><i class="fa-solid fa-user-doctor"></i>Doctor</button>
+  <button class="nav" onclick="go('patient',this)"><i class="fa-solid fa-user"></i>Patient</button>
+  <button class="nav" onclick="go('marketplace',this)"><i class="fa-solid fa-taxi"></i>Market</button>
+  <button class="nav" onclick="go('boards',this)"><i class="fa-solid fa-users-medical"></i>Boards</button>
+  <button class="nav" onclick="go('delivery',this)"><i class="fa-solid fa-truck-fast"></i>Delivery</button>
+  <button class="nav" onclick="go('investment',this)"><i class="fa-solid fa-chart-line"></i>Invest</button>
+</div></div>
+
+<script>
+/*
+BACKEND CONNECTION SETTINGS
+1. Keep MOCK_MODE = true for demo.
+2. When backend is ready, set MOCK_MODE = false and update:
+   API_BASE = "https://your-domain.com/api"
+   WS_URL   = "wss://your-domain.com/ws/clinic"
+
+Expected backend endpoints:
+GET  /api/dashboard/live
+GET  /api/patients/queue
+GET  /api/boards/cases
+GET  /api/delivery/orders
+POST /api/actions
+POST /api/otp/send
+POST /api/reports/upload
+
+Expected WebSocket events:
+{ "type":"patient_created", "payload": patient }
+{ "type":"patient_updated", "payload": patient }
+{ "type":"delivery_updated", "payload": order }
+{ "type":"board_updated", "payload": case }
+{ "type":"dashboard_updated", "payload": dashboard }
+*/
+
+const API_BASE = "https://your-backend-domain.com/api";
+const WS_URL = "wss://your-backend-domain.com/ws/clinic";
+let MOCK_MODE = true;
+let selectedPatientId = "P-1001";
+
+let state = {
+  dashboard:{clinics:24, queue:18, deliveries:7, ready:6, redFlags:3},
+  liveFlow:[
+    {label:"Clinic map setup", status:"Live", detail:"24 doctors ready for digital clinic routing", progress:100},
+    {label:"Patient uploads", status:"Active", detail:"Reports arriving via web, WhatsApp and Arattai", progress:72},
+    {label:"AI summaries", status:"Processing", detail:"6 cases ready for doctor review", progress:64},
+    {label:"Board reviews", status:"Queued", detail:"3 cases waiting for expert board", progress:48},
+    {label:"Prescriptions", status:"Doctor review", detail:"Drafts locked until doctor approval", progress:35},
+    {label:"Delivery", status:"Tracking", detail:"7 active orders across partner / in-house routes", progress:58}
+  ],
+  patients:[
+    {id:"P-1001", name:"Patient A", concern:"Pain + sleep", board:"Pain / Inflammatory Board", status:"AI Ready", tag:"Ready", red:false, summary:"High sleep-pain correlation with inflammatory flare pattern.", flags:"Check LFT, anticoagulants, sedatives/CNS depressants and psychiatric history.", questions:"Ask pain score, sleep hours, bowel pattern, current medicines, allergies and previous cannabis exposure."},
+    {id:"P-1002", name:"Patient B", concern:"PCOD + infertility", board:"PCOD / Fertility Board", status:"Reports Pending", tag:"Review", red:false, summary:"Cycle irregularity with metabolic and fertility risk pattern.", flags:"Rule out pregnancy, thyroid, prolactin, severe bleeding and active infection.", questions:"Ask cycle history, hormone reports, ultrasound, weight trend, acne/hirsutism and fertility timeline."},
+    {id:"P-1003", name:"Patient C", concern:"Cancer supportive care", board:"CancerQR Tumor Board", status:"Board Requested", tag:"Board", red:true, summary:"Appetite, sleep, fatigue and pain support required.", flags:"No anticancer claims. Coordinate with oncologist and review current chemotherapy/radiation/medicine list.", questions:"Ask oncology status, current treatment, pain score, appetite, weight loss, sleep, nausea and caregiver concerns."}
+  ],
+  boardCases:[
+    {id:"B-8001", patient:"Patient C", board:"CancerQR Tumor Board", status:"Oncologist review pending", progress:45},
+    {id:"B-8002", patient:"Patient A", board:"Pain / Inflammatory Board", status:"AI draft ready", progress:78},
+    {id:"B-8003", patient:"Patient B", board:"PCOD / Fertility Board", status:"Waiting for reports", progress:28}
+  ],
+  deliveries:[
+    {id:"D-501", patient:"Patient A", partner:"Apollo Pharmacy placeholder", status:"Prescription validation", progress:35},
+    {id:"D-502", patient:"Patient B", partner:"In-house shipping", status:"Waiting doctor approval", progress:20},
+    {id:"D-503", patient:"Patient C", partner:"Tata 1mg placeholder", status:"Stock check", progress:50}
+  ],
+  patientStatus:[
+    ["Assigned Doctor","Dr. EndoCann Clinic — verification active.","Active"],
+    ["Assigned Board","Pain / Inflammatory Board.","Board"],
+    ["AI Summary Status","Completed. Waiting for doctor review.","Done"],
+    ["Doctor-approved Protocol","Visible only after doctor approval.","Pending"],
+    ["Prescription Status","Draft locked until doctor approval.","Review"]
+  ]
+};
+
+function $(id){return document.getElementById(id)}
+function escapeHtml(str){return String(str).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))}
+
+function go(id,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  $(id).classList.add('on');
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  else {
+    const order=["home","doctor","patient","marketplace","boards","delivery","investment"];
+    const idx=order.indexOf(id);
+    if(idx>=0) document.querySelectorAll('.nav')[idx].classList.add('on');
+  }
+  window.scrollTo(0,0);
+}
+
+function doctorTab(type,btn){
+  document.querySelectorAll('#doctor .tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  ['dqueue','dai','dactions'].forEach(id=>$(id).style.display=id===type?'block':'none');
+}
+function wa(message){
+  window.open("https://wa.me/919686383132?text="+encodeURIComponent(message||"Hello EndoCann, I want to know more."),"_blank");
+}
+function toast(msg){
+  const el=$("toast");
+  el.innerHTML=escapeHtml(msg);
+  el.classList.add("on");
+  setTimeout(()=>el.classList.remove("on"),2500);
+}
+
+function setConnectionStatus(online, label){
+  $("liveDot").className = online ? "dot" : "dot offline";
+  $("liveText").innerText = label || (online ? "Backend Live" : "Mock Live");
+  $("liveSub").innerText = online ? "Backend connected. Real-time data is updating." : "Simulated data is active. Connect API_BASE and WS_URL to make it live.";
+}
+
+function toggleBackendMode(){
+  MOCK_MODE = !MOCK_MODE;
+  if(MOCK_MODE){
+    setConnectionStatus(false,"Mock Live");
+    toast("Mock live mode enabled.");
+    startMockLive();
+  } else {
+    setConnectionStatus(true,"Connecting...");
+    connectBackend();
+  }
+}
+
+function renderAll(){
+  const d=state.dashboard;
+  $("clinicCount").innerText=d.clinics;
+  $("queueCount").innerText=d.queue;
+  $("deliveryCount").innerText=d.deliveries;
+  $("docKpiPatients").innerText=d.queue;
+  $("docKpiReady").innerText=d.ready;
+  $("docKpiFlags").innerText=d.redFlags;
+  $("lastSync").innerText="Last sync " + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  renderFlow();
+  renderPatients();
+  renderBoards();
+  renderDeliveries();
+  renderPatientStatus();
+  selectPatient(selectedPatientId, false);
+}
+
+function renderFlow(){
+  $("liveFlow").innerHTML = state.liveFlow.map((x,i)=>`
+    <div class="flowstep">
+      <div class="num">${i+1}</div>
+      <div>
+        <b>${escapeHtml(x.label)} · ${escapeHtml(x.status)}</b>
+        <small>${escapeHtml(x.detail)}</small>
+        <div class="progress"><span style="width:${Number(x.progress)||0}%"></span></div>
+      </div>
+    </div>`).join("");
+}
+
+function tagClass(tag){
+  if(tag==="Ready"||tag==="Done"||tag==="Active") return "tag";
+  if(tag==="Board"||tag==="Route") return "tag blueTag";
+  if(tag==="Red"||tag==="Urgent") return "tag redTag";
+  return "tag warn";
+}
+
+function renderPatients(){
+  $("patientQueue").innerHTML = state.patients.map(p=>`
+    <div class="item ${p.id===selectedPatientId?'patient-active':''}" onclick="selectPatient('${p.id}', true)">
+      <div class="miniico">${p.red?'!':escapeHtml(p.name.slice(-1))}</div>
+      <div><b>${escapeHtml(p.name)}</b><small>${escapeHtml(p.concern)} · ${escapeHtml(p.status)}</small></div>
+      <span class="${tagClass(p.tag)}">${escapeHtml(p.tag)}</span>
+    </div>`).join("");
+}
+
+function selectPatient(id, openAi){
+  const p=state.patients.find(x=>x.id===id) || state.patients[0];
+  if(!p) return;
+  selectedPatientId=p.id;
+  $("aiSummary").innerText = p.name + ": " + p.concern + ". " + p.summary;
+  $("aiBoard").innerText = p.board;
+  $("aiRedflags").innerText = p.flags;
+  $("aiNotes").innerText = "Verify uploaded reports, current medicine list, allergies, diagnosis timeline, consent and emergency red flags before prescription.";
+  $("aiQuestions").innerText = p.questions;
+  renderPatients();
+  if(openAi) doctorTab('dai', document.querySelector('#doctor .tabs .tab:nth-child(2)'));
+}
+
+function renderBoards(){
+  $("boardCases").innerHTML = state.boardCases.map(c=>`
+    <div class="item">
+      <div class="miniico">🧬</div>
+      <div><b>${escapeHtml(c.patient)}</b><small>${escapeHtml(c.board)} · ${escapeHtml(c.status)}</small><div class="progress"><span style="width:${Number(c.progress)||0}%"></span></div></div>
+      <span class="tag blueTag">${c.progress}%</span>
+    </div>`).join("");
+}
+
+function renderDeliveries(){
+  $("deliveryOrders").innerHTML = state.deliveries.map(o=>`
+    <div class="item">
+      <div class="miniico">🚚</div>
+      <div><b>${escapeHtml(o.patient)} · ${escapeHtml(o.partner)}</b><small>${escapeHtml(o.status)}</small><div class="progress"><span style="width:${Number(o.progress)||0}%"></span></div></div>
+      <span class="${o.progress>=80?'tag':'tag warn'}">${o.progress}%</span>
+    </div>`).join("");
+}
+
+function renderPatientStatus(){
+  $("patientStatus").innerHTML = state.patientStatus.map(x=>`
+    <div class="item"><div class="miniico">✓</div><div><b>${escapeHtml(x[0])}</b><small>${escapeHtml(x[1])}</small></div><span class="${tagClass(x[2])}">${escapeHtml(x[2])}</span></div>`).join("");
+}
+
+function openBoard(title){
+  $("detailBody").innerHTML = `
+    <h2>${escapeHtml(title)}</h2>
+    <p>Live board module receives patient data, AI summary, uploaded reports and treating-doctor context. Board output remains a draft for physician review.</p>
+    <div class="panel" style="box-shadow:none">
+      <div class="item"><div class="miniico">🤖</div><div><b>AI-assisted summary</b><small>History, red flags, missing reports and suggested questions.</small></div></div>
+      <div class="item"><div class="miniico">👨‍⚕️</div><div><b>Expert review</b><small>Relevant specialists review the case context.</small></div></div>
+      <div class="item"><div class="miniico">✅</div><div><b>Doctor final approval</b><small>No automatic prescription or cure claim.</small></div></div>
+    </div>
+    <div class="note red">Supportive integrative care only. Final clinical decision remains with the registered treating doctor.</div>
+    <button class="btn whatsapp" onclick="wa('Hello EndoCann, I want to request ${escapeHtml(title)} review.')"><i class="fa-brands fa-whatsapp"></i> Request Board Review</button>
+    <button class="btn light" onclick="closeDetail()">Close</button>`;
+  $("detail").classList.add("on");
+}
+function closeDetail(){ $("detail").classList.remove("on"); }
+$("detail").addEventListener("click",e=>{ if(e.target.id==="detail") closeDetail(); });
+
+async function apiGet(path){
+  const res = await fetch(API_BASE + path, {headers:{"Accept":"application/json"}});
+  if(!res.ok) throw new Error("API error " + res.status);
+  return res.json();
+}
+async function apiPost(path, body){
+  const res = await fetch(API_BASE + path, {method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify(body||{})});
+  if(!res.ok) throw new Error("API error " + res.status);
+  return res.json();
+}
+
+async function connectBackend(){
+  try{
+    const data = await apiGet("/dashboard/live");
+    if(data.dashboard) state.dashboard = data.dashboard;
+    if(data.liveFlow) state.liveFlow = data.liveFlow;
+    if(data.patients) state.patients = data.patients;
+    if(data.boardCases) state.boardCases = data.boardCases;
+    if(data.deliveries) state.deliveries = data.deliveries;
+    setConnectionStatus(true,"Backend Live");
+    renderAll();
+    connectSocket();
+    toast("Backend connected.");
+  } catch(e){
+    MOCK_MODE = true;
+    setConnectionStatus(false,"Mock Live");
+    toast("Backend not reachable. Running realistic mock-live mode.");
+    startMockLive();
+  }
+}
+
+function connectSocket(){
+  try{
+    const ws = new WebSocket(WS_URL);
+    ws.onopen = () => setConnectionStatus(true,"Backend Live");
+    ws.onmessage = (event) => {
+      const msg = JSON.parse(event.data);
+      handleRealtimeEvent(msg);
+    };
+    ws.onerror = () => toast("WebSocket issue. Data will continue with polling/mock if configured.");
+    ws.onclose = () => {
+      setConnectionStatus(false,"Socket Closed");
+      if(!MOCK_MODE) setTimeout(connectSocket, 5000);
+    };
+  } catch(e){
+    toast("WebSocket unavailable.");
+  }
+}
+
+function handleRealtimeEvent(msg){
+  const p = msg.payload;
+  if(msg.type === "dashboard_updated") state.dashboard = {...state.dashboard, ...p};
+  if(msg.type === "patient_created") state.patients.unshift(p);
+  if(msg.type === "patient_updated") state.patients = state.patients.map(x=>x.id===p.id ? {...x,...p}:x);
+  if(msg.type === "board_updated") state.boardCases = state.boardCases.map(x=>x.id===p.id ? {...x,...p}:x);
+  if(msg.type === "delivery_updated") state.deliveries = state.deliveries.map(x=>x.id===p.id ? {...x,...p}:x);
+  renderAll();
+  toast("Live update received: " + msg.type.replaceAll("_"," "));
+}
+
+async function backendAction(action){
+  const payload = {action, patientId:selectedPatientId, timestamp:new Date().toISOString()};
+  if(MOCK_MODE){
+    toast("Mock action completed: " + action.replaceAll("_"," "));
+    if(action==="board_review"){
+      const patient=state.patients.find(p=>p.id===selectedPatientId);
+      state.boardCases.unshift({id:"B-"+Math.floor(Math.random()*9000), patient:patient?.name||"Patient", board:patient?.board||"Board", status:"New board request created", progress:10});
+    }
+    renderAll();
+    return;
+  }
+  try{
+    await apiPost("/actions", payload);
+    toast("Backend action sent: " + action.replaceAll("_"," "));
+  } catch(e){
+    toast("Action failed. Check backend endpoint /api/actions.");
+  }
+}
+
+async function sendOtp(){
+  const mobile=$("mobileInput").value.trim();
+  if(!mobile){toast("Enter mobile number first.");return;}
+  if(MOCK_MODE){toast("Mock OTP sent to " + mobile);return;}
+  try{await apiPost("/otp/send",{mobile});toast("OTP sent.");}catch(e){toast("OTP backend failed.");}
+}
+
+async function uploadReport(){
+  const symptoms=$("symptoms").value.trim();
+  const file=$("fileUpload").files[0];
+  if(MOCK_MODE){
+    toast(file ? "Mock report uploaded: " + file.name : "Mock case note uploaded.");
+    state.patientStatus[2]=["AI Summary Status","Processing newly uploaded reports.","Processing"];
+    renderPatientStatus();
+    return;
+  }
+  try{
+    await apiPost("/reports/upload",{patientId:"demo-patient", symptoms, fileName:file?.name || null});
+    toast("Report upload sent to backend.");
+  }catch(e){toast("Upload backend failed. Use multipart endpoint for real files.");}
+}
+
+let mockTimer;
+function startMockLive(){
+  clearInterval(mockTimer);
+  renderAll();
+  mockTimer = setInterval(()=>{
+    const d=state.dashboard;
+    d.queue = Math.max(12, d.queue + (Math.random()>.55?1:-1));
+    d.ready = Math.max(3, Math.min(12, d.ready + (Math.random()>.65?1:0)));
+    d.redFlags = Math.max(1, Math.min(5, d.redFlags + (Math.random()>.8?1:(Math.random()>.6?-1:0))));
+    d.deliveries = Math.max(4, Math.min(12, d.deliveries + (Math.random()>.6?1:-1)));
+    state.liveFlow.forEach(x=>{
+      const delta = Math.floor(Math.random()*9)-3;
+      x.progress = Math.max(10, Math.min(100, x.progress + delta));
+      if(x.progress>80) x.status="Live";
+      else if(x.progress>50) x.status="Processing";
+      else x.status="Queued";
+    });
+    state.deliveries.forEach(o=>{
+      o.progress = Math.min(100, o.progress + Math.floor(Math.random()*7));
+      if(o.progress>=100){o.status="Delivered"; o.progress=100;}
+      else if(o.progress>70) o.status="Out for delivery";
+      else if(o.progress>40) o.status="Partner processing";
+    });
+    state.boardCases.forEach(c=>{
+      c.progress = Math.min(100, c.progress + Math.floor(Math.random()*5));
+      if(c.progress>=85) c.status="Board draft ready";
+      else if(c.progress>55) c.status="Expert review active";
+    });
+    if(Math.random()>.82){
+      const id="P-"+Math.floor(1000+Math.random()*9000);
+      const sample=[
+        {concern:"Sleep + anxiety", board:"Stress / Sleep Board", tag:"Ready"},
+        {concern:"Inflammatory pain", board:"Pain / Inflammatory Board", tag:"Board"},
+        {concern:"PCOD follow-up", board:"PCOD / Fertility Board", tag:"Review"}
+      ][Math.floor(Math.random()*3)];
+      state.patients.unshift({id, name:"Live Patient "+id.slice(-2), concern:sample.concern, board:sample.board, status:"New upload received", tag:sample.tag, red:false, summary:"New reports received and AI summary is being prepared.", flags:"Doctor must verify medicine list, allergies and red flags.", questions:"Ask current symptoms, duration, medication history and priority concern."});
+      state.patients = state.patients.slice(0,7);
+      toast("New live patient upload received.");
+    }
+    renderAll();
+  }, 4500);
+}
+
+
+/* Ola/Uber-style doctor marketplace logic */
+state.marketplace = {
+  requests:[
+    {id:"R-301", patient:"New Patient 01", concern:"Pain flare + poor sleep", board:"Pain / Inflammatory Board", city:"Bengaluru", urgency:"Moderate", wait:"2m", status:"Open"},
+    {id:"R-302", patient:"New Patient 02", concern:"PCOD cycle irregularity", board:"PCOD / Fertility Board", city:"Mysuru", urgency:"Routine", wait:"5m", status:"Open"},
+    {id:"R-303", patient:"New Patient 03", concern:"Cancer supportive care", board:"CancerQR Tumor Board", city:"Kochi", urgency:"High", wait:"8m", status:"Board suggested"}
+  ],
+  doctors:[
+    {id:"D-01", name:"Dr. A — Ayurveda", specialty:"Pain / Sleep / Integrative", city:"Bengaluru", rating:"4.9", status:"Online", queue:"2"},
+    {id:"D-02", name:"Dr. B — Gynecology", specialty:"PCOD / Fertility", city:"Mysuru", rating:"4.8", status:"Online", queue:"1"},
+    {id:"D-03", name:"Dr. C — Oncology Support", specialty:"Cancer supportive care", city:"Kochi", rating:"4.9", status:"Busy", queue:"4"},
+    {id:"D-04", name:"Dr. D — Functional Medicine", specialty:"Metabolic / Sleep", city:"Online", rating:"4.7", status:"Online", queue:"0"}
+  ]
+};
+
+function marketTab(type,btn){
+  document.querySelectorAll('#marketplace .tab').forEach(t=>t.classList.remove('on'));
+  btn.classList.add('on');
+  ['requests','doctorsLive','matching'].forEach(id=>$(id).style.display=id===type?'block':'none');
+}
+
+function renderMarketplace(){
+  if(!$("liveRequests")) return;
+  $("marketRequests").innerText = state.marketplace.requests.filter(r=>r.status!=="Accepted").length;
+  $("marketDoctors").innerText = state.marketplace.doctors.filter(d=>d.status==="Online").length;
+  $("marketWait").innerText = Math.max(3, Math.min(12, state.marketplace.requests.length + 3)) + "m";
+
+  $("liveRequests").innerHTML = state.marketplace.requests.map(r=>`
+    <div class="item">
+      <div class="miniico">${r.urgency==="High" ? "!" : "👤"}</div>
+      <div>
+        <b>${escapeHtml(r.patient)} · ${escapeHtml(r.concern)}</b>
+        <small>${escapeHtml(r.city)} · ${escapeHtml(r.board)} · waiting ${escapeHtml(r.wait)}</small>
+      </div>
+      <span class="${r.urgency==="High" ? "tag redTag" : r.status==="Accepted" ? "tag" : "tag blueTag"}">${escapeHtml(r.status)}</span>
+    </div>
+    <div class="grid2">
+      <button class="btn" onclick="acceptRequest('${r.id}')"><i class="fa-solid fa-check"></i> Doctor Accept</button>
+      <button class="btn light" onclick="sendRequestToBoard('${r.id}')"><i class="fa-solid fa-users-medical"></i> Board</button>
+    </div>
+  `).join("");
+
+  $("liveDoctors").innerHTML = state.marketplace.doctors.map(d=>`
+    <div class="item">
+      <div class="miniico">${d.status==="Online" ? "🟢" : "🟠"}</div>
+      <div>
+        <b>${escapeHtml(d.name)}</b>
+        <small>${escapeHtml(d.specialty)} · ${escapeHtml(d.city)} · ⭐ ${escapeHtml(d.rating)} · queue ${escapeHtml(d.queue)}</small>
+      </div>
+      <span class="${d.status==="Online" ? "tag" : "tag warn"}">${escapeHtml(d.status)}</span>
+    </div>
+  `).join("");
+}
+
+function acceptRequest(id){
+  const req = state.marketplace.requests.find(r=>r.id===id);
+  if(!req) return;
+  req.status = "Accepted";
+  toast("Doctor accepted " + req.patient + ". Opening WhatsApp video flow.");
+  wa("Hello EndoCann, doctor accepted " + req.patient + " and wants to start consultation.");
+  renderMarketplace();
+}
+
+function sendRequestToBoard(id){
+  const req = state.marketplace.requests.find(r=>r.id===id);
+  if(!req) return;
+  req.status = "Board queued";
+  state.boardCases.unshift({id:"B-"+Math.floor(Math.random()*9000), patient:req.patient, board:req.board, status:"Marketplace request routed to board", progress:12});
+  toast(req.patient + " routed to " + req.board);
+  renderMarketplace();
+  renderBoards();
+}
+
+function simulateNewRequest(){
+  const samples = [
+    ["Pain + inflammation", "Pain / Inflammatory Board", "Bengaluru", "Moderate"],
+    ["PCOD / fertility query", "PCOD / Fertility Board", "Mangalore", "Routine"],
+    ["Sleep + anxiety", "Stress / Sleep Board", "Online", "Moderate"],
+    ["Cancer supportive care", "CancerQR Tumor Board", "Kochi", "High"]
+  ];
+  const s = samples[Math.floor(Math.random()*samples.length)];
+  const id = "R-" + Math.floor(100 + Math.random()*900);
+  state.marketplace.requests.unshift({id, patient:"Live Patient " + id.slice(-2), concern:s[0], board:s[1], city:s[2], urgency:s[3], wait:"0m", status:"Open"});
+  toast("New patient request received.");
+  renderMarketplace();
+}
+
+
+const oldRenderAll = renderAll;
+renderAll = function(){ oldRenderAll(); renderMarketplace(); };
+
+window.addEventListener("load",()=>{setConnectionStatus(false,"Mock Live");startMockLive();renderMarketplace();});
+</script>
+</body>
+</html>
