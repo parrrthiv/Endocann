@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#080f1e"/>
+<title>LegalQR — Legal Access OS</title>
+<style>
+:root{
+  --bg:#f2f5fc;--card:#fff;--ink:#0d1526;--sub:#4a5a72;--muted:#8a96aa;--line:#e2e9f4;
+  --navy:#080f1e;--navy2:#111d36;--navy3:#1a2d4e;
+  --blue:#1d4ed8;--blue2:#2563eb;--sky:#0ea5e9;
+  --vio:#6d28d9;--vio2:#7c3aed;
+  --gold:#d97706;--gold2:#f59e0b;--goldbg:#fffbeb;
+  --green:#15803d;--greenbg:#f0fdf4;--greenb:#16a34a;
+  --red:#dc2626;--redbg:#fef2f2;
+  --teal:#0f766e;--tealbg:#f0fdfa;
+  --wa:#128c7e;--wa2:#25d366;
+  --pink:#be185d;
+  --sh:0 4px 24px rgba(13,21,38,.09),0 0 0 1px rgba(13,21,38,.05);
+  --sh2:0 2px 10px rgba(13,21,38,.07);
+  --r:22px;--rs:14px;--rss:10px;
+  --bot:72px;--safe:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",system-ui,sans-serif;color:var(--ink);overflow-x:hidden}
+body{
+  background:var(--bg);
+  padding-bottom:calc(var(--bot) + var(--safe) + 8px);
+}
+button,input,select,textarea{font:inherit;border:0;cursor:pointer}
+a{text-decoration:none}
+
+/* ── LAYOUT ── */
+.app,.topIn,.botIn{max-width:1160px;margin:auto}
+.wrap{padding:14px}
+
+/* ── TOP BAR ── */
+.top{position:sticky;top:0;z-index:90;
+  background:rgba(242,245,252,.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--line)}
+.topIn{height:62px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer}
+.brandMark{
+  width:40px;height:40px;border-radius:14px;
+  background:linear-gradient(135deg,var(--blue2),var(--vio2));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:800;font-size:13px;letter-spacing:-.5px;
+  box-shadow:0 6px 20px rgba(37,99,235,.28)}
+.brandText b{display:block;font-size:17px;font-weight:800;letter-spacing:-.4px;line-height:1}
+.brandText b em{font-style:normal;color:var(--gold2)}
+.brandText small{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.02em}
+.topActs{display:flex;gap:7px;align-items:center}
+.topPill{height:34px;padding:0 13px;border-radius:999px;font-size:12px;font-weight:700;
+  background:#fff;border:1px solid var(--line);color:var(--ink);box-shadow:var(--sh2);white-space:nowrap}
+.topPill.navy{background:var(--navy);color:#fff;border:0}
+.topPill.gold{background:linear-gradient(135deg,#fbbf24,#d97706);color:#1a1100;border:0}
+
+/* ── SCREENS ── */
+.screen{display:none;animation:rise .2s ease}
+.screen.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── BUTTONS ── */
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;
+  min-height:48px;border-radius:var(--rs);padding:11px 15px;
+  font-weight:800;font-size:14px;line-height:1;
+  transition:transform .12s,opacity .12s}
+.btn:active{transform:scale(.975);opacity:.88}
+.btn.full{width:100%}
+.btn.prim{background:linear-gradient(135deg,var(--blue2),var(--vio2));color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.22)}
+.btn.gold{background:linear-gradient(135deg,#fbbf24,#b45309);color:#1a1100}
+.btn.green{background:linear-gradient(135deg,#22c55e,#15803d);color:#fff}
+.btn.wa{background:linear-gradient(135deg,var(--wa2),var(--wa));color:#fff}
+.btn.dark{background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff}
+.btn.sec{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.red{background:linear-gradient(135deg,#fb7185,var(--red));color:#fff}
+.btn.teal{background:linear-gradient(135deg,#14b8a6,var(--teal));color:#fff}
+.btn.sm{min-height:36px;border-radius:var(--rss);font-size:12px;padding:7px 12px}
+.btn.xs{min-height:30px;border-radius:8px;font-size:11px;padding:5px 10px;font-weight:700}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh2);padding:16px;margin-bottom:12px}
+.card.dark{background:linear-gradient(145deg,#080f1e,#142040);color:#fff;border:0;box-shadow:var(--sh)}
+.card.hero{background:linear-gradient(145deg,#080f1e 0%,#0f2155 55%,#3b1f7a 100%);color:#fff;border:0;box-shadow:var(--sh)}
+.card.navy{background:linear-gradient(145deg,#0d1e3e,#1a2d56);color:#fff;border:0}
+.card.cust{background:linear-gradient(145deg,#eef6ff,#f4f0ff);border-color:#dbeafe}
+.card.law{background:linear-gradient(145deg,#14082e,#2a1052);color:#fff;border:0}
+.card.admin{background:linear-gradient(145deg,#06262e,#0c1a2e);color:#fff;border:0}
+.card.mint{background:var(--greenbg);border-color:#bbf7d0}
+.card.amber{background:var(--goldbg);border-color:#fde68a}
+.card.rose{background:var(--redbg);border-color:#fecaca}
+
+/* ── GRID ── */
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
+.c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}
+.c6{grid-column:span 6}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:1/-1}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:10px}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:999px;
+  font-size:10.5px;font-weight:800;letter-spacing:.02em;
+  background:#dbeafe;color:#1d4ed8}
+.badge.green{background:#dcfce7;color:var(--green)}
+.badge.gold{background:#fef3c7;color:#92400e}
+.badge.red{background:#fee2e2;color:var(--red)}
+.badge.vio{background:#ede9fe;color:var(--vio)}
+.badge.wa{background:#dcfce7;color:var(--wa)}
+.badge.dark{background:rgba(255,255,255,.15);color:#fff}
+.badge.teal{background:#ccfbf1;color:var(--teal)}
+.badge.live{background:#dcfce7;color:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* ── HDR ── */
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.hdr h2{font-size:19px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
+.hdr p{font-size:12px;color:var(--muted);font-weight:600;margin-top:4px}
+.card.dark .hdr p,.card.hero .hdr p,.card.law .hdr p,.card.admin .hdr p,.card.navy .hdr p{color:rgba(255,255,255,.55)}
+.backRow{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back{width:36px;height:36px;border-radius:12px;background:#fff;border:1px solid var(--line);
+  font-size:18px;font-weight:800;color:var(--ink);box-shadow:var(--sh2);display:flex;align-items:center;justify-content:center}
+.backRow h2{font-size:20px;font-weight:800;letter-spacing:-.4px}
+.backRow p{font-size:12px;color:var(--muted);font-weight:600;margin-top:2px}
+
+/* ── INPUTS ── */
+input,select,textarea{width:100%;border:1.5px solid var(--line);border-radius:var(--rs);
+  background:#fff;color:var(--ink);padding:12px 14px;font-weight:600;font-size:14px;outline:0;
+  transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue2)}
+textarea{min-height:88px;line-height:1.5;resize:vertical}
+label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--muted);font-weight:800;margin:12px 0 5px}
+.formGroup{margin-bottom:4px}
+
+/* ── KPI GRID ── */
+.kpiGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:10px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:var(--rs);padding:12px}
+.kpi b{display:block;font-size:22px;font-weight:800;letter-spacing:-.5px}
+.kpi small{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-top:3px;letter-spacing:.02em}
+.card.dark .kpi,.card.law .kpi,.card.admin .kpi,.card.navy .kpi,.card.hero .kpi{
+  background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.12);color:#fff}
+.card.dark .kpi small,.card.law .kpi small,.card.admin .kpi small,.card.navy .kpi small,.card.hero .kpi small{color:rgba(255,255,255,.55)}
+
+/* ── HOME HERO ── */
+.homeHero{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;min-height:calc(100dvh - 150px);align-items:stretch}
+.heroPad{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;min-height:400px}
+.heroPad::before{content:"";position:absolute;right:-100px;top:-100px;width:300px;height:300px;
+  border-radius:50%;background:rgba(212,215,50,.07);pointer-events:none}
+.heroPad::after{content:"";position:absolute;left:-60px;bottom:-60px;width:200px;height:200px;
+  border-radius:50%;background:rgba(99,60,235,.12);pointer-events:none}
+.kicker{display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+  padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:16px}
+.dotLive{width:8px;height:8px;border-radius:50%;background:#22c55e;
+  box-shadow:0 0 0 4px rgba(34,197,94,.2);animation:pulse 2s infinite}
+.heroPad h1{font-size:clamp(30px,4.5vw,54px);font-weight:900;line-height:.97;
+  letter-spacing:-2px;margin-bottom:14px}
+.heroPad h1 span{display:block;color:#fbbf24}
+.heroPad .heroSub{font-size:15px;line-height:1.6;color:rgba(255,255,255,.68);max-width:560px}
+
+/* ── FLOW RAIL ── */
+.flowRail{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:20px 0}
+.flowItem{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);
+  border-radius:18px;padding:11px 8px;text-align:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:74px}
+.flowItem i{font-style:normal;font-size:24px}
+.flowItem b{font-size:10.5px;line-height:1.2;margin-top:6px;font-weight:700;color:rgba(255,255,255,.85)}
+.flowConnector{display:flex;align-items:center;gap:0;margin:20px 0}
+.flowConnector .fci{display:flex;flex-direction:column;align-items:center;flex:1}
+.flowConnector .fci i{font-style:normal;font-size:22px;width:44px;height:44px;border-radius:14px;
+  background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
+.flowConnector .fci b{font-size:10px;font-weight:700;color:rgba(255,255,255,.7);margin-top:5px}
+.flowConnector .arrow{color:rgba(255,255,255,.25);font-size:20px;flex-shrink:0;padding:0 2px}
+
+/* ── QUICK START ── */
+.quickStart{display:grid;grid-template-columns:1.2fr 1fr;gap:9px}
+
+/* ── ROLE CARDS ── */
+.roleStack{display:grid;gap:11px}
+.roleCard{
+  background:#fff;border:1px solid var(--line);border-radius:24px;
+  box-shadow:var(--sh);padding:16px;
+  display:grid;grid-template-columns:52px 1fr 36px;gap:12px;align-items:center;
+  transition:transform .15s,box-shadow .15s;cursor:pointer}
+.roleCard:active{transform:scale(.98)}
+.roleCard.customer{border-top:4px solid var(--sky)}
+.roleCard.lawyer{border-top:4px solid var(--vio2)}
+.roleCard.admin{border-top:4px solid var(--teal)}
+.roleIcon{width:52px;height:52px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:26px}
+.roleCard.customer .roleIcon{background:#e0f2fe}
+.roleCard.lawyer .roleIcon{background:#ede9fe}
+.roleCard.admin .roleIcon{background:#ccfbf1}
+.roleCard h3{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.roleCard p{font-size:12.5px;line-height:1.4;color:var(--sub);margin-top:4px}
+.roleArrow{width:36px;height:36px;border-radius:12px;background:var(--navy);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800}
+
+/* ── LOCATION CARD ── */
+.locationCard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px;box-shadow:var(--sh2)}
+.mapMini{height:140px;border-radius:18px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,#e0f2fe,#f5f3ff);border:1px solid #dbeafe}
+.mapMini::before{content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,transparent 0 23%,rgba(255,255,255,.6) 23.5% 25%,transparent 25.5% 51%,rgba(255,255,255,.6) 51.5% 53%,transparent 53.5%),
+    linear-gradient(0deg,transparent 0 28%,rgba(255,255,255,.6) 28.5% 30%,transparent 30.5% 58%,rgba(255,255,255,.6) 58.5% 60%,transparent 60.5%)}
+.mapMini::after{content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 35% 38%,#2563eb 0 5px,transparent 6px),
+    radial-gradient(circle at 62% 52%,#f59e0b 0 5px,transparent 6px),
+    radial-gradient(circle at 48% 72%,#16a34a 0 4px,transparent 5px)}
+.mapPin{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+  background:#ef4444;color:#fff;border-radius:999px;padding:5px 10px;
+  font-size:11px;font-weight:800;box-shadow:0 6px 16px rgba(239,68,68,.3);z-index:2}
+.mapDots{position:absolute;inset:0;pointer-events:none}
+
+/* ── DATA TILES ── */
+.onePlace{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.dataTile{background:#fff;border:1px solid var(--line);border-radius:16px;padding:11px;text-align:center}
+.dataTile i{font-style:normal;font-size:22px;display:block}
+.dataTile b{display:block;font-size:11px;font-weight:700;margin-top:5px;letter-spacing:-.2px}
+.dataTile small{display:block;color:var(--muted);font-size:10px;margin-top:2px;font-weight:600}
+
+/* ── TIMELINE ── */
+.timeline{display:grid;gap:0}
+.step{display:grid;grid-template-columns:34px 1fr;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:0;padding-bottom:0}
+.stepDot{width:32px;height:32px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:12px;flex-shrink:0}
+.stepDot.done{background:#dcfce7;color:var(--green)}
+.stepDot.wait{background:#eff6ff;color:var(--blue2)}
+.stepDot.gold{background:#fef3c7;color:#92400e}
+.stepDot.ai{background:linear-gradient(135deg,var(--blue2),var(--vio2));color:#fff;font-size:10px}
+.step b{font-size:13px;font-weight:700;line-height:1.2}
+.step small{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.35}
+
+/* ── ISSUE GRID ── */
+.issueGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.issueCard{background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:14px;
+  min-height:110px;text-align:left;cursor:pointer;transition:all .15s}
+.issueCard:active{transform:scale(.97)}
+.issueCard.on{border-color:var(--blue2);background:#eff6ff;box-shadow:0 0 0 4px rgba(37,99,235,.1)}
+.issueCard i{font-style:normal;font-size:26px;display:block}
+.issueCard b{display:block;margin-top:8px;font-size:13px;font-weight:700;line-height:1.2}
+.issueCard small{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.3;font-weight:600}
+
+/* ── UPLOAD ── */
+.uploadMode{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.uploadTile{background:#fff;border:2px dashed #bfdbfe;border-radius:18px;padding:14px;
+  text-align:center;cursor:pointer;transition:all .15s}
+.uploadTile:active{border-color:var(--blue2);background:#eff6ff;transform:scale(.97)}
+.uploadTile i{font-style:normal;font-size:28px;display:block}
+.uploadTile b{display:block;font-size:13px;font-weight:700;margin-top:7px}
+.uploadTile small{display:block;color:var(--muted);font-size:11px;margin-top:3px;font-weight:600}
+.uploadTile.done{border-color:var(--greenb);background:var(--greenbg)}
+
+/* ── DOC LIST ── */
+.docList{display:grid;gap:7px}
+.doc{display:flex;align-items:center;gap:10px;
+  background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px}
+.doc.done{background:var(--greenbg);border-color:#bbf7d0}
+.doc.warn{background:var(--goldbg);border-color:#fde68a}
+.doc.miss{background:var(--redbg);border-color:#fecaca}
+.docIcon{width:30px;height:30px;border-radius:10px;
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;flex-shrink:0;border:1px solid var(--line)}
+.doc.done .docIcon{background:#dcfce7;border-color:#bbf7d0;color:var(--green)}
+.doc.warn .docIcon{background:#fef3c7;border-color:#fde68a;color:#92400e}
+.doc.miss .docIcon{background:#fee2e2;border-color:#fecaca;color:var(--red)}
+.doc b{font-size:13px;font-weight:700;line-height:1.2}
+.doc small{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:2px}
+
+/* ── AI REPORT ── */
+.aiBlock{background:linear-gradient(145deg,#070e1d,#0e2250,#2a1060);color:#fff;
+  border-radius:26px;padding:18px;box-shadow:var(--sh);position:relative;overflow:hidden}
+.aiBlock::before{content:"";position:absolute;right:-80px;top:-80px;width:220px;height:220px;
+  border-radius:50%;background:rgba(124,58,237,.14);pointer-events:none}
+.aiBlock h2{font-size:23px;font-weight:900;letter-spacing:-.6px;margin:8px 0}
+.aiBlock p{font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.7)}
+.scoreRow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.score{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;padding:12px;text-align:center}
+.score b{display:block;color:#fbbf24;font-size:19px;font-weight:800;letter-spacing:-.3px}
+.score small{display:block;font-size:10.5px;color:rgba(255,255,255,.6);font-weight:700;margin-top:2px}
+.urgentBanner{
+  background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);
+  border-radius:12px;padding:10px 13px;margin:10px 0;
+  font-size:12.5px;font-weight:700;color:#fca5a5;
+  display:flex;align-items:center;gap:8px}
+
+/* ── LAWYER CARDS ── */
+.lawyerList{display:grid;gap:10px}
+.lawyerCard{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;
+  background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:13px;
+  box-shadow:var(--sh2);transition:all .15s;cursor:pointer}
+.lawyerCard:active{transform:scale(.98)}
+.lawyerCard.selected{border-color:var(--blue2);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.lAvatar{width:52px;height:52px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--blue2),var(--vio2));
+  color:#fff;font-weight:800;font-size:17px;flex-shrink:0}
+.lAvatar.gold{background:linear-gradient(135deg,#fbbf24,#b45309);color:#1a1100}
+.lAvatar.teal{background:linear-gradient(135deg,#14b8a6,#0f766e)}
+.lawyerCard h4{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.lawyerCard p{font-size:12px;color:var(--sub);line-height:1.35;margin-top:3px;font-weight:600}
+.lawyerCard .stars{font-size:11px;color:#b45309;font-weight:800;margin-top:4px}
+.fee{text-align:right;flex-shrink:0}
+.fee b{display:block;font-size:17px;font-weight:900;color:var(--green);letter-spacing:-.3px}
+.fee small{display:block;font-size:10px;color:var(--muted);font-weight:700;margin-top:2px}
+
+/* ── PAYMENT ── */
+.payBox{background:linear-gradient(145deg,#080f1e,#0e2250);color:#fff;
+  border-radius:28px;padding:18px;box-shadow:var(--sh)}
+.payAmount{font-size:46px;font-weight:900;color:#fbbf24;letter-spacing:-2px;margin:12px 0}
+.payGrid{display:grid;grid-template-columns:1fr 120px;gap:14px;align-items:center}
+.qrBlock{width:120px;height:120px;border:7px solid #fff;border-radius:20px;
+  background:repeating-linear-gradient(45deg,#111 0 7px,#fff 7px 12px)}
+
+/* ── ORDER CARDS ── */
+.orderCard{
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;
+  box-shadow:var(--sh2);display:grid;grid-template-columns:48px 1fr auto;
+  gap:11px;align-items:center;margin-bottom:10px;cursor:pointer;transition:all .15s}
+.orderCard:active{transform:scale(.985)}
+.orderCard:last-child{margin-bottom:0}
+.orderIcon{width:48px;height:48px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;font-size:22px;background:#eff6ff}
+.orderCard b{display:block;font-size:13.5px;font-weight:700;letter-spacing:-.2px}
+.orderCard span{display:block;font-size:11.5px;color:var(--muted);font-weight:600;margin-top:3px;line-height:1.35}
+.orderCard.darkish{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.13);color:#fff}
+.orderCard.darkish .orderIcon{background:rgba(255,255,255,.1)}
+.orderCard.darkish span{color:rgba(255,255,255,.6)}
+.urgTag{font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.urgHigh{background:#fee2e2;color:var(--red)}
+.urgMed{background:#fef3c7;color:#92400e}
+.urgLow{background:#dcfce7;color:var(--green)}
+
+/* ── DASHBOARD SHELL ── */
+.dashShell{display:grid;grid-template-columns:260px 1fr;gap:12px}
+.sideNav{background:#fff;border:1px solid var(--line);border-radius:24px;padding:12px;
+  box-shadow:var(--sh2);height:max-content;position:sticky;top:78px}
+.sideNav.law{background:linear-gradient(180deg,#14082e,#2a1052);border:0}
+.navItem{display:flex;align-items:center;gap:9px;border-radius:14px;padding:10px 12px;
+  color:var(--sub);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.navItem:active{transform:scale(.97)}
+.sideNav.law .navItem{color:rgba(255,255,255,.6)}
+.navItem.on{background:#eff6ff;color:var(--blue2)}
+.sideNav.law .navItem.on{background:rgba(255,255,255,.13);color:#fff}
+.navItem i{font-style:normal;font-size:17px;width:22px;text-align:center}
+.navBadge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:800;
+  width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* ── TABLE ── */
+.caseTable{width:100%;border-collapse:collapse;background:#fff;border-radius:18px;overflow:hidden;border:1px solid var(--line)}
+.caseTable th,.caseTable td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--line);font-size:12.5px}
+.caseTable th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:#f8fafd;font-weight:800}
+.caseTable tr:last-child td{border-bottom:0}
+
+/* ── WHATSAPP CHAT ── */
+.chatMock{background:#e5ddd5;border-radius:22px;overflow:hidden;border:1px solid var(--line)}
+.chatHead{background:#075e54;color:#fff;padding:11px 14px;font-weight:700;font-size:14px;
+  display:flex;align-items:center;gap:8px}
+.chatBody{display:grid;gap:8px;padding:12px;max-height:300px;overflow:auto}
+.msg{max-width:84%;border-radius:14px;padding:9px 12px;font-size:13px;line-height:1.45;font-weight:600}
+.msg.bot{background:#fff;border-top-left-radius:3px}
+.msg.user{background:#d9fdd3;justify-self:end;border-top-right-radius:3px;color:#111}
+.chatTyping{display:flex;gap:4px;padding:6px 12px 10px;align-items:center}
+.typDot{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:typing 1.2s infinite}
+.typDot:nth-child(2){animation-delay:.2s}.typDot:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,80%,100%{transform:none;opacity:.6}40%{transform:translateY(-5px);opacity:1}}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:7px;overflow-x:auto;margin-bottom:13px;padding-bottom:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border-radius:999px;padding:8px 14px;background:#fff;
+  border:1px solid var(--line);font-size:12.5px;color:var(--sub);font-weight:700;
+  cursor:pointer;transition:all .15s}
+.tab:active{transform:scale(.97)}
+.tab.on{background:linear-gradient(135deg,var(--blue2),var(--vio2));color:#fff;border:0}
+
+/* ── BOTTOM BAR ── */
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:100;
+  height:calc(var(--bot) + var(--safe));
+  padding:8px 10px calc(8px + var(--safe));
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--line);
+  box-shadow:0 -8px 28px rgba(13,21,38,.08)}
+.botIn{height:100%;display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.bNav{border-radius:14px;background:transparent;color:#64748b;
+  font-size:10px;font-weight:800;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  transition:all .15s;cursor:pointer}
+.bNav i{font-style:normal;font-size:22px;line-height:1}
+.bNav.on{background:#eff6ff;color:var(--blue2)}
+.bNav.law.on{background:#ede9fe;color:var(--vio2)}
+#homeBottom .botIn{grid-template-columns:1fr 1fr .7fr}
+.homeCta{border-radius:16px;font-weight:800;font-size:13px;color:#fff;
+  display:flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;transition:all .15s}
+.homeCta:active{transform:scale(.97)}
+.homeCta.customer{background:linear-gradient(135deg,var(--blue2),var(--vio2))}
+.homeCta.lawyer{background:linear-gradient(135deg,#7c3aed,#a855f7)}
+.homeCta.wa{background:linear-gradient(135deg,var(--wa2),var(--wa))}
+.hide{display:none!important}
+
+/* ── TOAST ── */
+.toast{position:fixed;left:50%;bottom:calc(var(--bot) + var(--safe) + 16px);
+  transform:translateX(-50%);z-index:250;
+  background:var(--navy);color:#fff;border-radius:999px;
+  padding:11px 18px;font-size:12.5px;font-weight:700;
+  box-shadow:0 12px 36px rgba(0,0,0,.25);display:none;white-space:nowrap}
+.toast.show{display:block;animation:pop .15s ease}
+@keyframes pop{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+
+/* ── DIVIDER ── */
+.divLabel{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+  font-weight:800;margin:14px 0 8px;display:block}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  body{--bot:68px}
+  .topActs .topPill:not(.gold){display:none}
+  .wrap{padding:11px}
+  .homeHero{display:block;min-height:auto}
+  .heroPad{min-height:calc(100dvh - 280px);padding:20px;margin-bottom:11px}
+  .heroPad h1{font-size:30px}
+  .flowRail{grid-template-columns:repeat(5,64px);overflow-x:auto}
+  .flowRail::-webkit-scrollbar{display:none}
+  .quickStart{grid-template-columns:1fr}
+  .grid,.dashShell{display:block}
+  .c3,.c4,.c5,.c6,.c7,.c8,.c12{grid-column:auto}
+  .sideNav{display:none}
+  .issueGrid{grid-template-columns:repeat(2,1fr)}
+  .uploadMode{grid-template-columns:repeat(2,1fr)}
+  .kpiGrid{grid-template-columns:repeat(2,1fr)}
+  .onePlace{grid-template-columns:repeat(4,1fr)}
+  .scoreRow{grid-template-columns:repeat(3,1fr)}
+  .lawyerCard{grid-template-columns:50px 1fr}
+  .lawyerCard .fee{grid-column:1/-1;display:flex;align-items:center;gap:10px;text-align:left}
+  .payGrid{grid-template-columns:1fr}
+  .qrBlock{margin:auto}
+  .r3{grid-template-columns:1fr}
+}
+@media(max-width:430px){
+  .issueGrid{grid-template-columns:1fr 1fr}
+  .uploadMode{grid-template-columns:1fr 1fr}
+  .scoreRow{grid-template-columns:1fr}
+  .onePlace{grid-template-columns:repeat(2,1fr)}
+  .r2{grid-template-columns:1fr}
+  .botIn{gap:3px}
+  .bNav{font-size:9px}
+  .homeCta{font-size:12px}
+  .kpiGrid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP -->
+<header class="top">
+  <div class="topIn">
+    <div class="brand" onclick="go('home')">
+      <div class="brandMark">LQ</div>
+      <div class="brandText">
+        <b>Legal<em>QR</em></b>
+        <small>Legal Access OS · India</small>
+      </div>
+    </div>
+    <div class="topActs">
+      <button class="topPill" onclick="toast('ಕನ್ನಡ / हिन्दी / தமிழ் / EN')">ಕನ್ನಡ / EN</button>
+      <button class="topPill navy" onclick="go('lawyerOnboard')">Join as Lawyer</button>
+      <button class="topPill gold" onclick="go('customerStart')">Start Case ›</button>
+    </div>
+  </div>
+</header>
+
+<main class="app">
+
+<!-- ═══════ HOME ═══════ -->
+<section id="home" class="screen active">
+<div class="wrap">
+<div class="homeHero">
+
+  <!-- LEFT: HERO -->
+  <div class="card hero heroPad">
+    <div>
+      <div class="kicker"><span class="dotLive"></span> Live · Karnataka First Rollout</div>
+      <h1>From legal problem<br><span>to lawyer-ready<br>case file.</span></h1>
+      <p class="heroSub">Location → Case ID → Documents → WhatsApp intake → AI triage → Verified lawyer → Payment → Follow-ups. One structured workflow.</p>
+      <div class="flowRail">
+        <div class="flowItem"><i>📍</i><b>Location</b></div>
+        <div class="flowItem"><i>🆔</i><b>Case ID</b></div>
+        <div class="flowItem"><i>📎</i><b>Documents</b></div>
+        <div class="flowItem"><i>🤖</i><b>AI Triage</b></div>
+        <div class="flowItem"><i>⚖️</i><b>Lawyer</b></div>
+      </div>
+    </div>
+    <div class="quickStart">
+      <button class="btn prim" onclick="go('customerStart')">Start My Case ›</button>
+      <button class="btn gold" onclick="go('lawyerOnboard')">Join Lawyer Network</button>
+    </div>
+  </div>
+
+  <!-- RIGHT: ROLE CARDS + LOCATION -->
+  <div class="roleStack">
+    <div class="roleCard customer" onclick="go('customerStart')">
+      <div class="roleIcon">👤</div>
+      <div><h3>For Customers</h3><p>Upload docs, get AI triage, choose a verified lawyer, pay and track your case like an order.</p></div>
+      <div class="roleArrow">›</div>
+    </div>
+    <div class="roleCard lawyer" onclick="go('lawyerDash')">
+      <div class="roleIcon">👨‍⚖️</div>
+      <div><h3>For Lawyers</h3><p>Receive paid, structured case files with location, documents, AI brief and follow-up tools.</p></div>
+      <div class="roleArrow">›</div>
+    </div>
+    <div class="roleCard admin" onclick="go('dataHub')">
+      <div class="roleIcon">🗂️</div>
+      <div><h3>One Case Workspace</h3><p>Documents, chat, payments, court dates and tasks — same case ID, role-based views.</p></div>
+      <div class="roleArrow">›</div>
+    </div>
+    <div class="locationCard">
+      <div class="hdr"><div><h2>Location Intelligence</h2><p>Court · Language · Radius matching</p></div><span class="badge green live">● Active</span></div>
+      <div class="mapMini"><span class="mapPin">📍 Bengaluru</span></div>
+    </div>
+  </div>
+
+</div>
+</div>
+</section>
+
+<!-- ═══════ CUSTOMER START ═══════ -->
+<section id="customerStart" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('home')">‹</button><div><h2>Get Legal Help</h2><p>Takes 2 minutes. No paperwork.</p></div></div>
+  <div class="grid">
+    <div class="card cust c7">
+      <div class="hdr"><div><h2>Your location &amp; contact</h2></div><span class="badge">Customer</span></div>
+      <label>Mobile Number (OTP)</label><input type="tel" value="+91 98765 43210"/>
+      <label>Your City</label>
+      <select id="custCity"><option>Bengaluru</option><option>Mysuru</option><option>Mangalore</option><option>Shimoga</option><option>Hubli</option><option>Online only</option></select>
+      <label>Preferred Language</label>
+      <select><option>Kannada + English</option><option>English</option><option>Hindi</option><option>Tamil</option><option>Malayalam</option></select>
+      <div class="r2" style="margin-top:16px">
+        <button class="btn prim" onclick="toast('OTP verified ✓');go('customerIssue')">Verify OTP &amp; Continue</button>
+        <button class="btn wa" onclick="go('whatsapp')">Use WhatsApp</button>
+      </div>
+      <button class="btn sec full" style="margin-top:9px" onclick="go('customerTracker')">Track Existing Case ›</button>
+    </div>
+    <div class="card c5">
+      <div class="hdr"><div><h2>How it works</h2></div></div>
+      <div class="timeline">
+        <div class="step"><div class="stepDot done">1</div><div><b>OTP + Location</b><small>City, court, language — sets lawyer matching radius.</small></div></div>
+        <div class="step"><div class="stepDot wait">2</div><div><b>Select legal issue</b><small>Property, divorce, cheque bounce, criminal, consumer and more.</small></div></div>
+        <div class="step"><div class="stepDot wait">3</div><div><b>Upload documents</b><small>App, WhatsApp, camera scan or Drive link.</small></div></div>
+        <div class="step"><div class="stepDot ai">AI</div><div><b>AI report → lawyer → pay</b><small>Lawyer receives full structured file only after payment.</small></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ CUSTOMER ISSUE ═══════ -->
+<section id="customerIssue" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('customerStart')">‹</button><div><h2>Select Legal Issue</h2><p>AI routes to the right lawyer type and document checklist.</p></div></div>
+  <div class="grid">
+    <div class="card c8">
+      <div class="tabs">
+        <button class="tab on">Common</button>
+        <button class="tab">Emergency</button>
+        <button class="tab">Business</button>
+        <button class="tab">Court Case</button>
+      </div>
+      <div id="issueGrid" class="issueGrid"></div>
+    </div>
+    <div class="card c4">
+      <div class="hdr"><div><h2>Case Snapshot</h2></div></div>
+      <label>Brief facts</label>
+      <textarea id="facts">Cheque of ₹4,50,000 bounced. Legal notice not sent. Need a lawyer near Bengaluru court.</textarea>
+      <label>Urgency</label>
+      <select><option>🔴 Urgent — notice / deadline / court date</option><option>🟡 Normal — few weeks</option><option>🟢 Planning only</option></select>
+      <button class="btn prim full" style="margin-top:14px" onclick="prepareDocs()">Continue to Documents ›</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ CUSTOMER DOCS ═══════ -->
+<section id="customerDocs" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('customerIssue')">‹</button><div><h2>Upload Documents</h2><p>AI checklist updates by issue type.</p></div></div>
+  <div class="grid">
+    <div class="card c7">
+      <div class="hdr"><div><h2 id="docHeading">Document Checklist</h2></div><span class="badge gold">Case LQ-2048</span></div>
+      <div class="uploadMode">
+        <div class="uploadTile" id="ut1" onclick="uploadDone('ut1')"><i>📎</i><b>App Upload</b><small>PDF / photo / scan</small></div>
+        <div class="uploadTile" id="ut2" onclick="go('whatsapp')"><i>🟢</i><b>WhatsApp</b><small>Send to bot</small></div>
+        <div class="uploadTile" id="ut3" onclick="uploadDone('ut3')"><i>🔗</i><b>Drive Link</b><small>Share folder</small></div>
+      </div>
+      <div id="docList" class="docList" style="margin-top:12px"></div>
+      <button class="btn green full" style="margin-top:13px" onclick="go('aiReport')">Generate AI Preliminary Report ›</button>
+    </div>
+    <div class="card c5">
+      <div class="hdr"><div><h2>One Case Folder</h2></div></div>
+      <div class="onePlace">
+        <div class="dataTile"><i>📍</i><b>Location</b><small>Bengaluru</small></div>
+        <div class="dataTile"><i>📎</i><b>Docs</b><small>3 / 6</small></div>
+        <div class="dataTile"><i>💬</i><b>Chat</b><small>WhatsApp</small></div>
+        <div class="dataTile"><i>💳</i><b>Payment</b><small>Pending</small></div>
+        <div class="dataTile"><i>🤖</i><b>AI Report</b><small>Generating</small></div>
+        <div class="dataTile"><i>👨‍⚖️</i><b>Lawyer</b><small>Not chosen</small></div>
+        <div class="dataTile"><i>📅</i><b>Follow-up</b><small>Auto</small></div>
+        <div class="dataTile"><i>🏛️</i><b>Court</b><small>Mapped</small></div>
+      </div>
+      <div class="card amber" style="margin-top:10px;padding:12px">
+        <div style="font-size:12px;font-weight:700;color:#92400e;display:flex;align-items:center;gap:6px">
+          ⏰ Limitation Alert
+        </div>
+        <div style="font-size:12px;color:#78350f;margin-top:5px;line-height:1.5">
+          Legal notice must be issued within <b>30 days</b> of bank return memo. Your deadline is approaching.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ WHATSAPP ═══════ -->
+<section id="whatsapp" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('customerStart')">‹</button><div><h2>WhatsApp Intake</h2></div></div>
+  <div class="grid">
+    <div class="card c6">
+      <div class="chatMock">
+        <div class="chatHead">🟢 LegalQR · WhatsApp Bot</div>
+        <div class="chatBody" id="chatBody">
+          <div class="msg bot">Namaste 🙏 Share your city and legal issue.</div>
+          <div class="msg user">Bengaluru. Cheque bounce.</div>
+          <div class="msg bot">Received. Please send: ① Cheque copy ② Bank return memo ③ Payment proof.</div>
+          <div class="msg user">Uploading cheque and return memo now.</div>
+          <div class="msg bot">✅ Documents received. Creating Case ID <b>LQ-2048</b> and AI preliminary report.</div>
+          <div class="msg bot">Your verified lawyer suggestions are ready. Reply YES to continue.</div>
+          <div class="msg user">YES</div>
+        </div>
+        <div class="chatTyping"><span class="typDot"></span><span class="typDot"></span><span class="typDot"></span><span style="font-size:11px;color:var(--muted);margin-left:6px;font-weight:600">LegalQR is typing…</span></div>
+      </div>
+    </div>
+    <div class="card c6">
+      <div class="hdr"><div><h2>WhatsApp → Structured Case</h2></div><span class="badge wa">WhatsApp</span></div>
+      <div class="timeline">
+        <div class="step"><div class="stepDot done">✓</div><div><b>Mobile verified</b><small>Number becomes customer identity.</small></div></div>
+        <div class="step"><div class="stepDot done">✓</div><div><b>Location + issue captured</b><small>City, court, language stored in Case ID.</small></div></div>
+        <div class="step"><div class="stepDot ai">AI</div><div><b>Documents extracted</b><small>Photos / PDFs go into one case folder automatically.</small></div></div>
+        <div class="step"><div class="stepDot wait">4</div><div><b>Lawyer suggestions sent</b><small>Matched by location, practice area and language.</small></div></div>
+      </div>
+      <button class="btn prim full" style="margin-top:10px" onclick="go('aiReport')">View AI Report ›</button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ AI REPORT ═══════ -->
+<section id="aiReport" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('customerDocs')">‹</button><div><h2>AI Preliminary Report</h2><p>For lawyer review — not a legal opinion.</p></div></div>
+  <div class="grid">
+    <div class="aiBlock c8">
+      <span class="badge gold">🤖 AI PRELIMINARY REPORT</span>
+      <h2 id="aiTitle">Cheque Bounce — Section 138 NI Act</h2>
+      <p id="aiSummary">Customer is in Bengaluru. Cheque copy and return memo uploaded. Legal notice is pending — limitation and notice timeline must be reviewed immediately by a verified NI Act lawyer.</p>
+      <div class="urgentBanner">⚠️ Notice deadline active — 30-day window from bank return memo. Immediate action required.</div>
+      <div class="scoreRow">
+        <div class="score"><b>🔴 High</b><small>Urgency</small></div>
+        <div class="score"><b>Bengaluru</b><small>Jurisdiction</small></div>
+        <div class="score"><b>3 nearby</b><small>Lawyers</small></div>
+      </div>
+      <div class="r2">
+        <button class="btn green" onclick="go('lawyerSelect')">Find Verified Lawyers ›</button>
+        <button class="btn sec" onclick="window.print()">Print / Save</button>
+      </div>
+    </div>
+    <div class="card c4">
+      <div class="hdr"><div><h2>Report Sections</h2></div></div>
+      <div class="docList">
+        <div class="doc done"><div class="docIcon">✓</div><div><b>Facts extracted</b><small>Claim ₹4.5L · Parties · Location</small></div></div>
+        <div class="doc done"><div class="docIcon">⚖️</div><div><b>Lawyer type suggested</b><small>NI Act litigation specialist</small></div></div>
+        <div class="doc warn"><div class="docIcon">!</div><div><b>Missing documents</b><small>Notice · Postal proof · Address</small></div></div>
+        <div class="doc"><div class="docIcon">🏛️</div><div><b>Judgment map</b><small>Lawyer review only</small></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ LAWYER SELECT ═══════ -->
+<section id="lawyerSelect" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('aiReport')">‹</button><div><h2>Choose Your Lawyer</h2><p>Sorted by match — not paid ranking.</p></div></div>
+  <div class="grid">
+    <div class="card c8">
+      <div class="hdr"><div><h2>Verified lawyers near Bengaluru</h2></div><span class="badge green">3 Available Now</span></div>
+      <div class="lawyerList">
+        <div class="lawyerCard selected" onclick="selectLawyer('Adv. Ananya Kumar','₹1,499')">
+          <div class="lAvatar">AK</div>
+          <div>
+            <h4>Adv. Ananya Kumar</h4>
+            <p>Cheque bounce + recovery · Bengaluru City Civil Court · Kannada / English</p>
+            <div class="stars">★★★★★ 4.9 · Verified · 12 yrs · 4.2 km</div>
+          </div>
+          <div class="fee"><b>₹1,499</b><small>30 min</small><button class="btn prim sm" style="margin-top:6px" onclick="selectLawyer('Adv. Ananya Kumar','₹1,499')">Select</button></div>
+        </div>
+        <div class="lawyerCard" onclick="selectLawyer('Adv. Raghav Sharma','₹999')">
+          <div class="lAvatar gold">RS</div>
+          <div>
+            <h4>Adv. Raghav Sharma</h4>
+            <p>NI Act · Commercial disputes · Online + Bengaluru / Mysuru</p>
+            <div class="stars">★★★★☆ 4.4 · Verified · 9 yrs · Online</div>
+          </div>
+          <div class="fee"><b>₹999</b><small>20 min</small><button class="btn gold sm" style="margin-top:6px" onclick="selectLawyer('Adv. Raghav Sharma','₹999')">Select</button></div>
+        </div>
+        <div class="lawyerCard" onclick="selectLawyer('Adv. Meera Nair','₹2,499')">
+          <div class="lAvatar teal">MN</div>
+          <div>
+            <h4>Adv. Meera Nair</h4>
+            <p>Business recovery + contracts · Bengaluru / Online</p>
+            <div class="stars">★★★★★ 4.8 · Verified · 14 yrs · 6.8 km</div>
+          </div>
+          <div class="fee"><b>₹2,499</b><small>45 min</small><button class="btn prim sm" style="margin-top:6px" onclick="selectLawyer('Adv. Meera Nair','₹2,499')">Select</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="card c4">
+      <div class="hdr"><div><h2>Payment unlock</h2></div></div>
+      <div class="timeline">
+        <div class="step"><div class="stepDot done">1</div><div><b>Select lawyer</b><small>By court · fee · language · distance.</small></div></div>
+        <div class="step"><div class="stepDot wait">2</div><div><b>Pay consultation</b><small>UPI · Card · Net Banking.</small></div></div>
+        <div class="step"><div class="stepDot wait">3</div><div><b>Lawyer dashboard unlocked</b><small>AI report + all documents + customer contact visible.</small></div></div>
+      </div>
+      <div class="locationCard" style="margin-top:10px">
+        <div class="mapMini"><span class="mapPin">⚖️ 3 lawyers</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ PAYMENT ═══════ -->
+<section id="payment" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('lawyerSelect')">‹</button><div><h2>Payment</h2><p>Case released to lawyer after payment.</p></div></div>
+  <div class="grid">
+    <div class="payBox c6">
+      <span class="badge gold">Selected Lawyer</span>
+      <h2 id="payLawyer" style="margin-top:10px;font-size:22px;font-weight:900">Adv. Ananya Kumar</h2>
+      <p style="color:rgba(255,255,255,.6);font-size:13px;margin-top:4px">Consultation + AI report review + next legal step</p>
+      <div class="payGrid">
+        <div>
+          <div id="payAmount" class="payAmount">₹1,499</div>
+          <button class="btn green full" onclick="toast('Payment successful ✓ Lawyer notified');go('customerTracker')">Pay with UPI ›</button>
+          <button class="btn sec full" style="margin-top:8px" onclick="toast('Card payment demo');go('customerTracker')">Pay with Card</button>
+        </div>
+        <div class="qrBlock"></div>
+      </div>
+    </div>
+    <div class="card c6">
+      <div class="hdr"><div><h2>What happens next</h2></div></div>
+      <div class="timeline">
+        <div class="step"><div class="stepDot done">✓</div><div><b>Payment complete</b><small>Invoice stored in case folder.</small></div></div>
+        <div class="step"><div class="stepDot wait">2</div><div><b>Lawyer reviews file</b><small>AI report + documents visible in lawyer dashboard.</small></div></div>
+        <div class="step"><div class="stepDot wait">3</div><div><b>Call / consultation</b><small>Lawyer contacts customer to confirm next action.</small></div></div>
+        <div class="step"><div class="stepDot wait">4</div><div><b>Tasks &amp; follow-ups</b><small>Case tracker updates at every milestone.</small></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ CUSTOMER TRACKER ═══════ -->
+<section id="customerTracker" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('home')">‹</button><div><h2>My Cases</h2></div></div>
+  <div class="dashShell">
+    <div class="sideNav">
+      <div class="navItem on"><i>📍</i> Case Tracker</div>
+      <div class="navItem"><i>📎</i> Documents</div>
+      <div class="navItem"><i>💬</i> Chat</div>
+      <div class="navItem"><i>💳</i> Payments</div>
+      <div class="navItem"><i>📅</i> Follow-ups</div>
+    </div>
+    <div>
+      <div class="card cust">
+        <div class="hdr"><div><h2>LQ-2048 · Cheque Bounce</h2><p>Bengaluru · Adv. Ananya Kumar · Paid ₹1,499</p></div><span class="badge green">Lawyer Reviewing</span></div>
+        <div class="timeline">
+          <div class="step"><div class="stepDot done">✓</div><div><b>Location + issue captured</b><small>Bengaluru · Cheque Bounce · Kannada / English</small></div></div>
+          <div class="step"><div class="stepDot done">✓</div><div><b>Documents uploaded</b><small>Cheque copy · Return memo · Transaction proof</small></div></div>
+          <div class="step"><div class="stepDot done">✓</div><div><b>AI report generated</b><small>Preliminary brief sent to lawyer</small></div></div>
+          <div class="step"><div class="stepDot done">✓</div><div><b>Payment completed</b><small>Lawyer file unlocked · Invoice issued</small></div></div>
+          <div class="step"><div class="stepDot wait">5</div><div><b>Lawyer reviewing</b><small>Next: confirm address · schedule call</small></div></div>
+        </div>
+        <div class="r3" style="margin-top:10px">
+          <button class="btn prim">Chat Lawyer</button>
+          <button class="btn wa">WhatsApp Update</button>
+          <button class="btn sec" onclick="window.print()">Print Summary</button>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card c6">
+          <div class="hdr"><div><h2>Pending from you</h2></div></div>
+          <div class="docList">
+            <div class="doc warn"><div class="docIcon">!</div><div><b>Upload accused address</b><small>Required to serve legal notice.</small></div></div>
+            <div class="doc warn"><div class="docIcon">!</div><div><b>Confirm cheque issue date</b><small>Lawyer will check limitation period.</small></div></div>
+          </div>
+        </div>
+        <div class="card c6">
+          <div class="hdr"><div><h2>Case Data</h2></div></div>
+          <div class="onePlace">
+            <div class="dataTile"><i>📎</i><b>Docs</b><small>4 files</small></div>
+            <div class="dataTile"><i>💬</i><b>Chat</b><small>8 msgs</small></div>
+            <div class="dataTile"><i>💳</i><b>Paid</b><small>₹1,499</small></div>
+            <div class="dataTile"><i>📅</i><b>Call</b><small>Today 4PM</small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ LAWYER ONBOARD ═══════ -->
+<section id="lawyerOnboard" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('home')">‹</button><div><h2>Join Lawyer Network</h2><p>Receive paid structured case files. BCI Rule 36 compliant.</p></div></div>
+  <div class="grid">
+    <div class="card law c7">
+      <div class="hdr"><div><h2>Verified Advocate Registration</h2></div><span class="badge gold">Verification</span></div>
+      <label>Advocate Full Name</label><input value="Adv. Ananya Kumar"/>
+      <label>Bar Council Enrolment No.</label><input value="KAR/1234/2012"/>
+      <label>Primary Court / City</label>
+      <select><option>Bengaluru City Civil Court</option><option>Mysuru Court</option><option>Karnataka High Court</option><option>Mangalore Court</option><option>Online Consultation only</option></select>
+      <label>Service Radius</label>
+      <select><option>0–10 km + Online</option><option>City-wide</option><option>State-wide</option><option>Online only</option></select>
+      <label>Practice Areas</label><input value="Cheque Bounce, Civil Recovery, Contract Disputes"/>
+      <label>Languages</label><input value="Kannada, English, Hindi"/>
+      <label>Consultation Fee (₹)</label><input type="number" value="1499"/>
+      <div class="r2" style="margin-top:14px">
+        <button class="btn gold" onclick="toast('Profile submitted ✓ Under verification');go('lawyerDash')">Submit &amp; Preview Dashboard</button>
+        <button class="btn sec" onclick="go('lawyerDash')">Already onboarded</button>
+      </div>
+    </div>
+    <div class="card c5">
+      <div class="hdr"><div><h2>Verification Checklist</h2></div></div>
+      <div class="docList">
+        <div class="doc done"><div class="docIcon">1</div><div><b>Mobile OTP</b><small>Verified contact identity.</small></div></div>
+        <div class="doc done"><div class="docIcon">2</div><div><b>Bar Council enrolment</b><small>State Bar Council details confirmed.</small></div></div>
+        <div class="doc warn"><div class="docIcon">3</div><div><b>Certificate of Practice</b><small>Upload current year proof.</small></div></div>
+        <div class="doc"><div class="docIcon">4</div><div><b>Bank / UPI details</b><small>For instant payment settlement.</small></div></div>
+        <div class="doc"><div class="docIcon">5</div><div><b>Availability &amp; radius</b><small>Courts, languages, time slots.</small></div></div>
+      </div>
+      <div class="card amber" style="margin-top:10px;padding:12px">
+        <div style="font-size:12px;font-weight:700;color:#92400e">⚖️ BCI Compliance</div>
+        <div style="font-size:12px;color:#78350f;margin-top:5px;line-height:1.5">
+          LegalQR operates as a verified case file platform — not lawyer advertising. Customer-initiated only. Compliant with BCI Rules 36–38.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ LAWYER DASHBOARD ═══════ -->
+<section id="lawyerDash" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('home')">‹</button><div><h2>Lawyer Dashboard</h2></div></div>
+  <div class="dashShell">
+    <div class="sideNav law">
+      <div class="navItem on"><i>💼</i> Paid Cases <span class="navBadge">3</span></div>
+      <div class="navItem"><i>📍</i> Location Queue</div>
+      <div class="navItem"><i>📎</i> Documents</div>
+      <div class="navItem"><i>💳</i> Payments</div>
+      <div class="navItem"><i>📅</i> Follow-ups</div>
+      <div class="navItem"><i>🧾</i> Invoices</div>
+    </div>
+    <div>
+      <div class="card law">
+        <div class="hdr"><div><h2>Adv. Ananya Kumar</h2><p>Bengaluru · Cheque Bounce / Recovery · 0–10 km + Online</p></div><span class="badge green">✓ Verified</span></div>
+        <div class="kpiGrid">
+          <div class="kpi"><b>18</b><small>Active Cases</small></div>
+          <div class="kpi"><b>₹74k</b><small>Monthly Revenue</small></div>
+          <div class="kpi"><b>7</b><small>Today Follow-ups</small></div>
+          <div class="kpi"><b>4.9 ★</b><small>Rating</small></div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card c8">
+          <div class="hdr"><div><h2>New Paid Cases</h2></div><span class="badge gold">3 Unlocked</span></div>
+          <div class="orderCard" onclick="go('lawyerCase')">
+            <div class="orderIcon">💳</div>
+            <div><b>LQ-2048 · Cheque Bounce</b><span>Bengaluru · ₹4.5L claim · Paid ₹1,499 · <span class="urgTag urgHigh">High Urgency</span></span></div>
+            <button class="btn prim sm">Open ›</button>
+          </div>
+          <div class="orderCard" onclick="go('lawyerCase')">
+            <div class="orderIcon">🏠</div>
+            <div><b>LQ-3011 · Property Dispute</b><span>Mysuru · Sale deed + EC uploaded · Paid ₹2,999 · <span class="urgTag urgMed">Medium</span></span></div>
+            <button class="btn dark sm">Open ›</button>
+          </div>
+          <div class="orderCard" onclick="go('lawyerCase')">
+            <div class="orderIcon">👨‍👩‍👧</div>
+            <div><b>LQ-1180 · Family Matter</b><span>Online · Maintenance query · Paid ₹999 · <span class="urgTag urgLow">Normal</span></span></div>
+            <button class="btn dark sm">Open ›</button>
+          </div>
+        </div>
+        <div class="card c4">
+          <div class="hdr"><div><h2>Location View</h2></div></div>
+          <div class="locationCard" style="padding:0;border:0;box-shadow:none">
+            <div class="mapMini"><span class="mapPin">⚖️ Bengaluru Court</span></div>
+          </div>
+          <div class="docList" style="margin-top:10px">
+            <div class="doc done"><div class="docIcon">📍</div><div><b>4.2 km</b><small>LQ-2048 customer</small></div></div>
+            <div class="doc done"><div class="docIcon">📍</div><div><b>Online</b><small>LQ-1180 customer</small></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="card c6">
+          <div class="hdr"><div><h2>Payments</h2></div></div>
+          <table class="caseTable">
+            <tr><th>Case ID</th><th>Amount</th><th>Status</th></tr>
+            <tr><td>LQ-2048</td><td>₹1,499</td><td><span class="badge green">Paid</span></td></tr>
+            <tr><td>LQ-3011</td><td>₹2,999</td><td><span class="badge green">Paid</span></td></tr>
+            <tr><td>LQ-9001</td><td>₹999</td><td><span class="badge gold">Pending</span></td></tr>
+          </table>
+        </div>
+        <div class="card c6">
+          <div class="hdr"><div><h2>Today's Follow-ups</h2></div></div>
+          <div class="timeline">
+            <div class="step"><div class="stepDot wait">10AM</div><div><b>Call LQ-2048</b><small>Confirm accused address for legal notice.</small></div></div>
+            <div class="step"><div class="stepDot wait">12PM</div><div><b>Review LQ-3011</b><small>Check EC and sale agreement.</small></div></div>
+            <div class="step"><div class="stepDot gold">4PM</div><div><b>Raise invoice</b><small>Drafting fee for legal notice.</small></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ LAWYER CASE WORKSPACE ═══════ -->
+<section id="lawyerCase" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('lawyerDash')">‹</button><div><h2>Case Workspace</h2></div></div>
+  <div class="grid">
+    <div class="card dark c8">
+      <div class="hdr"><div><h2>LQ-2048 · Cheque Bounce</h2><p>Bengaluru · Paid customer · AI brief ready</p></div><span class="badge gold">🔓 Unlocked</span></div>
+      <p style="color:rgba(255,255,255,.72);font-size:13.5px;line-height:1.55;margin-top:4px">AI brief: ₹4,50,000 cheque bounce. Cheque copy and return memo uploaded. Legal notice pending. Drawer address and postal workflow required. Check limitation before drafting notice.</p>
+      <div class="scoreRow">
+        <div class="score"><b>₹4.5L</b><small>Claim Amount</small></div>
+        <div class="score"><b>🔴 High</b><small>Urgency</small></div>
+        <div class="score"><b>4.2 km</b><small>Location</small></div>
+      </div>
+      <div class="r3">
+        <button class="btn gold">✓ Accept Case</button>
+        <button class="btn prim">📅 Schedule Call</button>
+        <button class="btn sec">📎 Request Docs</button>
+      </div>
+    </div>
+    <div class="card c4">
+      <div class="hdr"><div><h2>Documents</h2></div></div>
+      <div class="docList">
+        <div class="doc done"><div class="docIcon">PDF</div><div><b>Cheque Copy</b><small>Uploaded by customer</small></div></div>
+        <div class="doc done"><div class="docIcon">PDF</div><div><b>Bank Return Memo</b><small>WhatsApp upload</small></div></div>
+        <div class="doc done"><div class="docIcon">IMG</div><div><b>Payment Proof</b><small>Screenshot attached</small></div></div>
+        <div class="doc miss"><div class="docIcon">!</div><div><b>Address Proof</b><small>Request from customer</small></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="card c6">
+      <div class="hdr"><div><h2>Lawyer Notes</h2></div></div>
+      <textarea>Ask for drawer address. Prepare notice draft. Verify cheque date vs return memo date. Schedule customer call today.</textarea>
+      <button class="btn prim full" style="margin-top:10px" onclick="toast('Notes saved ✓')">Save Notes</button>
+    </div>
+    <div class="card c6">
+      <div class="hdr"><div><h2>Action Centre</h2></div></div>
+      <div class="r2">
+        <button class="btn prim" onclick="toast('Notice draft template opened')">📝 Draft Notice</button>
+        <button class="btn sec" onclick="toast('Document request sent to customer')">📎 Ask More Docs</button>
+        <button class="btn gold" onclick="toast('Invoice generated ✓')">🧾 Raise Invoice</button>
+        <button class="btn green" onclick="toast('Follow-up marked ✓')">📅 Mark Follow-up</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ DATA HUB ═══════ -->
+<section id="dataHub" class="screen">
+<div class="wrap">
+  <div class="backRow"><button class="back" onclick="go('home')">‹</button><div><h2>LegalQR Data Hub</h2></div></div>
+  <div class="card admin">
+    <div class="hdr"><div><h2>One Case ID = Complete Legal Workflow</h2><p>Customer · Lawyer · Admin — same data, role-based views.</p></div><span class="badge teal">Structured</span></div>
+    <div class="kpiGrid">
+      <div class="kpi"><b>1,248</b><small>Customers</small></div>
+      <div class="kpi"><b>186</b><small>Lawyers</small></div>
+      <div class="kpi"><b>₹8.7L</b><small>GMV</small></div>
+      <div class="kpi"><b>92%</b><small>SLA Met</small></div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="card c4">
+      <div class="hdr"><div><h2>Customer View</h2></div></div>
+      <div class="docList">
+        <div class="doc"><div class="docIcon">📍</div><div><b>Location</b><small>City · court · language</small></div></div>
+        <div class="doc"><div class="docIcon">📎</div><div><b>Documents</b><small>Upload status and missing list</small></div></div>
+        <div class="doc"><div class="docIcon">🔄</div><div><b>Tracker</b><small>Order-style legal progress</small></div></div>
+      </div>
+    </div>
+    <div class="card c4">
+      <div class="hdr"><div><h2>Lawyer View</h2></div></div>
+      <div class="docList">
+        <div class="doc"><div class="docIcon">🤖</div><div><b>AI Brief</b><small>Preliminary report for review</small></div></div>
+        <div class="doc"><div class="docIcon">💳</div><div><b>Payments</b><small>Fee · invoices · settlement</small></div></div>
+        <div class="doc"><div class="docIcon">📅</div><div><b>Follow-ups</b><small>Tasks and court dates</small></div></div>
+      </div>
+    </div>
+    <div class="card c4">
+      <div class="hdr"><div><h2>Admin View</h2></div></div>
+      <div class="docList">
+        <div class="doc"><div class="docIcon">✅</div><div><b>Verification</b><small>Lawyer onboarding queue</small></div></div>
+        <div class="doc"><div class="docIcon">🏙️</div><div><b>Location Supply</b><small>Demand by city / court</small></div></div>
+        <div class="doc"><div class="docIcon">📊</div><div><b>Analytics</b><small>Cases · GMV · SLA</small></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+
+<!-- ── HOME BOTTOM ── -->
+<div id="homeBottom" class="bottom">
+  <div class="botIn">
+    <button class="homeCta customer" onclick="go('customerStart')">⚖️ Start Case</button>
+    <button class="homeCta lawyer" onclick="go('lawyerOnboard')">👨‍⚖️ Join Lawyer</button>
+    <button class="homeCta wa" onclick="go('whatsapp')">🟢 WhatsApp</button>
+  </div>
+</div>
+
+<!-- ── CUSTOMER BOTTOM ── -->
+<div id="custBottom" class="bottom hide">
+  <div class="botIn">
+    <button class="bNav" onclick="go('home')"><i>🏠</i>Home</button>
+    <button class="bNav" onclick="go('customerIssue')"><i>⚖️</i>Issue</button>
+    <button class="bNav" onclick="go('customerDocs')"><i>📎</i>Docs</button>
+    <button class="bNav" onclick="go('lawyerSelect')"><i>👨‍⚖️</i>Lawyer</button>
+    <button class="bNav" onclick="go('customerTracker')"><i>📍</i>Track</button>
+  </div>
+</div>
+
+<!-- ── LAWYER BOTTOM ── -->
+<div id="lawBottom" class="bottom hide">
+  <div class="botIn">
+    <button class="bNav law" onclick="go('home')"><i>🏠</i>Home</button>
+    <button class="bNav law" onclick="go('lawyerOnboard')"><i>✅</i>Join</button>
+    <button class="bNav law on" onclick="go('lawyerDash')"><i>💼</i>Cases</button>
+    <button class="bNav law" onclick="go('lawyerCase')"><i>📁</i>Workspace</button>
+    <button class="bNav law" onclick="go('dataHub')"><i>🗂️</i>Data Hub</button>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+/* ── DATA ── */
+const issues=[
+ {id:'cheque',  icon:'💳', name:'Cheque Bounce',    sub:'NI Act · notice · recovery · filing'},
+ {id:'property',icon:'🏠', name:'Property Dispute', sub:'Sale deed · EC · khata · partition'},
+ {id:'family',  icon:'👨‍👩‍👧', name:'Family / Divorce',  sub:'Divorce · custody · maintenance'},
+ {id:'criminal',icon:'👮', name:'Criminal / FIR',   sub:'Bail · police notice · complaint'},
+ {id:'consumer',icon:'🛒', name:'Consumer',         sub:'Defective product or service'},
+ {id:'employment',icon:'🧾',name:'Employment',      sub:'Termination · salary · contract'},
+ {id:'startup', icon:'🏢', name:'Startup / Company',sub:'Founder · agreement · MCA'},
+ {id:'tax',     icon:'📊', name:'Tax / GST',        sub:'Notice · demand · appeal'},
+ {id:'medical', icon:'🏥', name:'Medical Negligence',sub:'Hospital records · complaint'}
+];
+
+const docs={
+ cheque:    [['✓','Cheque copy','done'],['✓','Bank return memo','done'],['✓','Transaction proof','done'],['!','Legal notice draft','warn'],['!','Accused address','miss'],['→','Postal proof after notice','']],
+ property:  [['✓','Sale deed / agreement','done'],['✓','Khata / RTC / tax receipt','done'],['!','EC / encumbrance certificate','warn'],['!','Legal notice if any',''],['→','Court order if any',''],['→','Property photos / site map','']],
+ family:    [['✓','Marriage certificate','done'],['✓','ID / address proof','done'],['!','Income documents','warn'],['!','Children details',''],['→','Existing case papers',''],['→','Evidence / communication','']],
+ criminal:  [['✓','FIR / complaint copy','done'],['✓','ID / address proof','done'],['!','Notice / summons','warn'],['!','Bail order if any',''],['→','Evidence documents',''],['→','Medical report if any','']],
+ consumer:  [['✓','Invoice / bill','done'],['✓','Complaint emails','done'],['!','Warranty card','warn'],['!','Product photos',''],['→','Service report',''],['→','Company response','']],
+ employment:[['✓','Appointment letter','done'],['✓','Termination letter','done'],['!','Salary slips (last 3 months)','warn'],['!','HR emails',''],['→','Employment contract',''],['→','Bank salary proof','']],
+ startup:   [['✓','Shareholder agreement','done'],['✓','MCA documents','done'],['!','Founder communication','warn'],['!','Board resolutions',''],['→','Invoices / contracts',''],['→','Legal notice if any','']],
+ tax:       [['✓','Tax notice received','done'],['✓','GST / PAN details','done'],['!','Return filed copy','warn'],['!','Demand order',''],['→','Ledger / invoices',''],['→','Appeal papers if any','']],
+ medical:   [['✓','Discharge summary','done'],['✓','Bills / invoices','done'],['!','Investigation reports','warn'],['!','Consent forms',''],['→','Prescription records',''],['→','Hospital communication','']]
+};
+
+const aiTitles={
+ cheque:'Cheque Bounce — Section 138 NI Act',
+ property:'Property Dispute — Civil / Title Lawyer Suggested',
+ family:'Family Matter — Family Court Lawyer Suggested',
+ criminal:'Criminal Matter — Bail / FIR Lawyer Suggested',
+ consumer:'Consumer Complaint — Consumer Forum Lawyer Suggested',
+ employment:'Employment Issue — Labour / Contract Lawyer Suggested',
+ startup:'Startup Legal — Corporate Lawyer Suggested',
+ tax:'Tax / GST Notice — Tax Lawyer Suggested',
+ medical:'Medical Negligence — Consumer + Medical Law Lawyer Suggested'
+};
+
+let selectedIssue='cheque';
+
+/* ── BUILD ISSUE GRID ── */
+function buildIssues(){
+  const g=document.getElementById('issueGrid');
+  if(!g)return;
+  g.innerHTML='';
+  issues.forEach(x=>{
+    const b=document.createElement('button');
+    b.className='issueCard'+(selectedIssue===x.id?' on':'');
+    b.innerHTML=`<i>${x.icon}</i><b>${x.name}</b><small>${x.sub}</small>`;
+    b.onclick=()=>{selectedIssue=x.id;buildIssues()};
+    g.appendChild(b);
+  });
+}
+
+/* ── PREPARE DOCS ── */
+function prepareDocs(){
+  const issue=issues.find(x=>x.id===selectedIssue);
+  document.getElementById('docHeading').textContent=issue.name+' — Document Checklist';
+  const dl=document.getElementById('docList');
+  dl.innerHTML='';
+  (docs[selectedIssue]||docs.cheque).forEach(([icon,name,cls])=>{
+    const d=document.createElement('div');
+    d.className='doc'+(cls?' '+cls:'');
+    const dIcon=document.createElement('div');
+    dIcon.className='docIcon';
+    dIcon.textContent=icon;
+    const dText=document.createElement('div');
+    dText.innerHTML=`<b>${name}</b><small>${cls==='done'?'Uploaded / available':cls==='warn'?'Required before lawyer action':'Optional — upload if available'}</small>`;
+    d.appendChild(dIcon);
+    d.appendChild(dText);
+    dl.appendChild(d);
+  });
+  const aiT=document.getElementById('aiTitle');
+  const aiS=document.getElementById('aiSummary');
+  if(aiT) aiT.textContent=aiTitles[selectedIssue]||'Legal Issue — Lawyer Suggested';
+  if(aiS) aiS.textContent=`Customer is in Bengaluru. LegalQR has created a structured case folder with document checklist, AI urgency score and nearby verified ${issue.name} lawyer suggestions.`;
+  go('customerDocs');
+}
+
+/* ── SELECT LAWYER ── */
+function selectLawyer(name,amount){
+  document.getElementById('payLawyer').textContent=name;
+  document.getElementById('payAmount').textContent=amount;
+  go('payment');
+}
+
+/* ── UPLOAD DEMO ── */
+function uploadDone(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.classList.add('done');
+  const icon=el.querySelector('i');
+  if(icon)icon.textContent='✅';
+  const lbl=el.querySelector('b');
+  if(lbl)lbl.textContent='Uploaded';
+  toast('File received ✓');
+}
+
+/* ── NAVIGATION ── */
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const sc=document.getElementById(id);
+  if(sc)sc.classList.add('active');
+
+  // bottom nav routing
+  const hb=document.getElementById('homeBottom');
+  const cb=document.getElementById('custBottom');
+  const lb=document.getElementById('lawBottom');
+  hb.classList.add('hide');
+  cb.classList.add('hide');
+  lb.classList.add('hide');
+
+  if(id==='home'){hb.classList.remove('hide');}
+  else if(['lawyerDash','lawyerCase','lawyerOnboard','dataHub'].includes(id)){lb.classList.remove('hide');}
+  else{cb.classList.remove('hide');}
+
+  // active state on bottom nav
+  document.querySelectorAll('.bNav').forEach(b=>b.classList.remove('on'));
+  const navMap={
+    home:'home',customerStart:'home',
+    customerIssue:'customerIssue',customerDocs:'customerDocs',
+    lawyerSelect:'lawyerSelect',lawyerDash:'lawyerDash',
+    customerTracker:'customerTracker',lawyerCase:'lawyerCase',dataHub:'dataHub'
+  };
+  const targetNav=navMap[id];
+  if(targetNav){
+    document.querySelectorAll('.bNav').forEach(b=>{
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(targetNav)){b.classList.add('on');}
+    });
+  }
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── TOAST ── */
+function toast(t){
+  const x=document.getElementById('toast');
+  x.textContent=t;
+  x.classList.add('show');
+  setTimeout(()=>x.classList.remove('show'),1800);
+}
+
+/* ── TABS (visual only) ── */
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('tab')){
+    const tabs=e.target.closest('.tabs');
+    if(tabs){tabs.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));e.target.classList.add('on');}
+  }
+});
+
+/* ── INIT ── */
+buildIssues();
+</script>
+</body>
+</html>
