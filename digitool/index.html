@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EndoCann Digital Clinic — Mobile Rx</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{
+  --n9:#071c3a;--n8:#0c2d5e;--n7:#1045a0;--n6:#1a5fcc;--n5:#2070e8;--n4:#4a8ff5;--n3:#85b8fb;--n2:#c0d9fd;--n1:#deeeff;--n0:#f3f8ff;
+  --g8:#1a2637;--g6:#46586d;--g5:#6b7d8f;--g4:#9aaab8;--g2:#dde5ee;--g1:#f0f4f9;--g0:#f7f9fc;--wh:#fff;
+  --pain:#1045a0;--cancer:#0c2d5e;--pcod:#1a5fcc;--stress:#2070e8;
+  --resp:#0e6b6b;--skin:#2a6640;--gi:#1c52a8;--classical:#2d5494;
+  --pmc:#155f2e;--pubmed:#1a3eaf;--jrnl:#8b3a0e;
+  --sha:0 3px 14px rgba(8,30,64,.10);--sha2:0 6px 24px rgba(8,30,64,.16);--r:10px;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
+  --nav-h:52px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:linear-gradient(160deg,#e8f1fc 0%,#f2f7fd 50%,#f8fafc 100%);color:var(--g8);font-size:14px;min-height:100vh;}
+.wrap{max-width:520px;margin:0 auto;padding:10px 10px 80px;}
+
+/* ══ HEADER ══ */
+.hdr{background:linear-gradient(135deg,var(--n9) 0%,#0e3a8a 55%,var(--n6) 100%);color:var(--wh);border-radius:var(--r);padding:13px 14px 11px;margin-bottom:10px;box-shadow:var(--sha2);position:relative;overflow:hidden;}
+.hdr::before{content:"";position:absolute;top:-24px;right:-24px;width:130px;height:130px;background:radial-gradient(circle,rgba(255,255,255,.07),transparent 70%);pointer-events:none;}
+.hdr-row1{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+.brand{display:flex;align-items:center;gap:9px;}
+.bico{width:36px;height:36px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
+.bname{font-size:1.0rem;font-weight:800;line-height:1.15;letter-spacing:-.01em;}
+.bsub{font-size:.57rem;opacity:.7;letter-spacing:.05em;text-transform:uppercase;margin-top:1px;}
+.dbadge{font-size:.57rem;font-weight:700;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:.2rem .6rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.cbtns{display:flex;gap:5px;flex-wrap:wrap;}
+.cbtn{padding:6px 10px;border-radius:6px;font-size:.66rem;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:.25rem;border:none;cursor:pointer;font-family:var(--font);transition:all .13s;}
+.cwa{background:#22c55e;color:var(--wh);}.cwa:hover{background:#16a34a;}
+.cem,.cwb,.cprt,.cpdf{background:rgba(255,255,255,.11);color:var(--wh);border:1px solid rgba(255,255,255,.22);}
+.cem:hover,.cwb:hover,.cprt:hover,.cpdf:hover{background:rgba(255,255,255,.2);}
+
+/* ══ PROTOCOL TABS — 4 only ══ */
+.ptabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+.pt{border:1.5px solid var(--g2);border-radius:9px;padding:9px 3px;text-align:center;cursor:pointer;background:var(--wh);transition:all .16s;font-size:.6rem;font-weight:700;color:var(--g5);box-shadow:var(--sha);}
+.pt:hover{border-color:var(--n5);color:var(--n7);transform:translateY(-1px);}
+.pto{font-size:1.05rem;margin-bottom:3px;}
+.pt.ap{background:var(--pain);color:var(--wh);border-color:var(--pain);}
+.pt.ac{background:var(--cancer);color:var(--wh);border-color:var(--cancer);}
+.pt.apc{background:var(--pcod);color:var(--wh);border-color:var(--pcod);}
+.pt.ast{background:var(--stress);color:var(--wh);border-color:var(--stress);}
+
+/* ══ STICKY BOTTOM NAV ══ */
+.sticky-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:var(--wh);border-top:1.5px solid var(--g2);
+  box-shadow:0 -4px 20px rgba(8,30,64,.12);
+  padding:6px 10px 8px;
+  display:flex;gap:4px;justify-content:center;
+}
+.sticky-nav-inner{display:flex;gap:4px;width:100%;max-width:520px;}
+.nb{flex:1;border:1.5px solid var(--g2);border-radius:8px;padding:6px 2px;text-align:center;cursor:pointer;background:var(--g0);font-size:.55rem;font-weight:700;color:var(--g5);transition:all .13s;line-height:1.35;display:flex;flex-direction:column;align-items:center;gap:1px;}
+.nb .nb-ico{font-size:.85rem;line-height:1;}
+.nb.on{background:var(--n8);color:var(--wh);border-color:var(--n8);}
+.nb:hover:not(.on){background:var(--n1);color:var(--n7);border-color:var(--n3);}
+
+/* ══ CARD ══ */
+.card{background:var(--wh);border:1px solid var(--g2);border-radius:var(--r);padding:14px;margin-bottom:10px;box-shadow:var(--sha);}
+.sec-title{font-size:.82rem;font-weight:800;color:var(--n8);margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid var(--n1);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+
+/* ══ FORM ══ */
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.fg{margin-bottom:8px;}
+.fg label{font-size:.62rem;font-weight:700;color:var(--g5);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:8px 10px;border:1.5px solid var(--g2);border-radius:7px;font-size:.8rem;font-family:var(--font);outline:none;transition:border .13s,box-shadow .13s;background:var(--g0);color:var(--g8);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--n5);background:var(--wh);box-shadow:0 0 0 3px rgba(32,112,232,.1);}
+.fg textarea{resize:none;min-height:52px;}
+
+/* ══ CHECKBOX ROWS ══ */
+.chkrow{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:8px;font-size:.72rem;font-weight:600;margin-bottom:7px;cursor:pointer;border:1.5px solid;}
+.chkrow input[type=checkbox]{width:16px;height:16px;cursor:pointer;flex-shrink:0;margin-top:1px;accent-color:var(--n6);}
+.chkrow .chk-text strong{display:block;font-size:.73rem;margin-bottom:2px;}
+.chkrow .chk-text small{font-size:.63rem;opacity:.75;line-height:1.4;display:block;}
+/* colours */
+.chk-amber{background:#fffbeb;border-color:#fcd34d;color:#92400e;}
+.chk-green{background:#f0fdf4;border-color:#86efac;color:#14532d;}
+.chk-blue{background:#eff6ff;border-color:#93c5fd;color:#1e3a8a;}
+.chk-teal{background:#f0fdfa;border-color:#5eead4;color:#134e4a;}
+.chk-olive{background:#f7fee7;border-color:#a3e635;color:#365314;}
+.chk-indigo{background:#eef2ff;border-color:#a5b4fc;color:#312e81;}
+.chk-pink{background:#fdf4ff;border-color:#e879f9;color:#701a75;}
+
+/* ══ BUTTONS ══ */
+.gen-btn{width:100%;padding:15px 16px;background:linear-gradient(135deg,#072554 0%,#0e3a8a 42%,#2563eb 100%);color:var(--wh);border:none;border-radius:14px;font-size:.95rem;font-weight:900;cursor:pointer;transition:transform .18s,box-shadow .18s,filter .18s;font-family:var(--font);margin-bottom:8px;letter-spacing:.02em;box-shadow:0 10px 24px rgba(16,69,160,.24), inset 0 1px 0 rgba(255,255,255,.18);position:relative;overflow:hidden;}
+.gen-btn::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.18),transparent 30%,transparent 70%,rgba(255,255,255,.08));pointer-events:none;}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(16,69,160,.30), inset 0 1px 0 rgba(255,255,255,.18);filter:saturate(1.06);}
+.gen-btn:active{transform:translateY(0);}
+.rst-btn{width:100%;padding:11px 14px;background:linear-gradient(180deg,#fff,#f6f9fd);color:var(--g6);border:1.5px solid #cfd9e6;border-radius:12px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .16s;box-shadow:0 4px 12px rgba(8,30,64,.06);}
+.rst-btn:hover{border-color:var(--n3);color:var(--n7);background:#fff;}
+
+/* ══ RX OUTPUT ══ */
+.rxout{display:none;margin-top:10px;}
+.rxout.active{display:block;}
+.rx-hdr{background:linear-gradient(135deg,var(--n9),#0e3a8a,var(--n6));color:var(--wh);border-radius:var(--r) var(--r) 0 0;padding:12px 14px;}
+.rx-hdr h2{font-size:.9rem;font-weight:800;margin-bottom:2px;}
+.rx-hdr p{font-size:.61rem;opacity:.72;}
+.rx-body{border:1px solid var(--g2);border-radius:0 0 var(--r) var(--r);border-top:none;padding:11px 13px;}
+.rxsec{padding:8px 0;border-bottom:1px solid var(--g1);}
+.rxsec:last-child{border-bottom:none;padding-bottom:0;}
+.rxlbl{font-size:.62rem;font-weight:800;color:var(--g5);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px;}
+.rxval{font-size:.79rem;line-height:1.6;}
+.pbox{background:linear-gradient(135deg,#eef5ff,#f5f9ff);border:1.5px solid var(--g2);border-left:4px solid var(--n5);border-radius:8px;padding:9px 11px;margin-bottom:7px;}
+.pbox:last-child{margin-bottom:0;}
+.pbox.hi{border-left-color:var(--n8);background:linear-gradient(135deg,#ddeeff,#f0f5ff);}
+.pname{font-size:.79rem;font-weight:800;color:var(--n8);margin-bottom:4px;}
+.pdose{font-size:.73rem;line-height:1.7;}
+.ecs-tag{font-size:.61rem;color:#1a3eaf;background:#eff6ff;border-radius:5px;padding:3px 7px;margin-top:4px;line-height:1.45;border:1px solid #dbeafe;}
+.tit-box{background:linear-gradient(135deg,#f0f7ff,#e8f2ff);border:1.5px solid var(--n2);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:.71rem;line-height:1.8;color:var(--n8);}
+.rx-sig{margin-top:10px;padding-top:10px;border-top:1px dashed var(--g2);display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:.65rem;color:var(--g5);}
+.sig-line{border-top:1px solid #aaa;width:110px;margin-top:26px;padding-top:3px;font-size:.6rem;}
+.rx-acts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px;}
+.rxbtn{flex:1;padding:11px 10px;border:none;border-radius:12px;font-size:.76rem;font-weight:800;cursor:pointer;font-family:var(--font);transition:transform .16s,box-shadow .16s,filter .16s;border:1px solid transparent;box-shadow:0 8px 18px rgba(8,30,64,.10);}
+.rxbtn:hover{transform:translateY(-1px);filter:saturate(1.05);}
+.rb-pr{background:linear-gradient(135deg,#08224d,#1045a0);color:var(--wh);}
+.rb-pdf{background:linear-gradient(135deg,#1d4ed8,#4f7df1);color:var(--wh);}
+.rb-wa{background:linear-gradient(135deg,#16a34a,#22c55e);color:var(--wh);}
+.rb-rs{background:linear-gradient(180deg,#fff,#f6f9fd);color:var(--g6);border:1.5px solid #cfd9e6;}
+
+/* ══ PRODUCTS ══ */
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.pc{border:1.5px solid var(--g2);border-radius:9px;overflow:hidden;background:var(--wh);box-shadow:var(--sha);transition:box-shadow .14s;}
+.pc:hover{box-shadow:var(--sha2);}
+.pch{padding:9px 10px;}
+.pcn{font-size:.72rem;font-weight:800;color:var(--wh);line-height:1.2;}
+.pcp{font-size:.57rem;color:rgba(255,255,255,.72);margin-top:2px;font-family:var(--mono);}
+.pcb{padding:9px 10px;}
+.pcu{font-size:.65rem;color:var(--g6);margin-bottom:4px;line-height:1.4;}
+.pcd{font-size:.65rem;color:var(--g8);font-weight:700;background:var(--n0);border:1px solid var(--n2);border-radius:5px;padding:3px 7px;margin-bottom:4px;font-family:var(--mono);}
+.pcec{font-size:.58rem;color:#1a3eaf;background:#eff6ff;border-radius:4px;padding:3px 6px;margin-bottom:4px;line-height:1.35;border:1px solid #dbeafe;}
+.pcay{font-size:.56rem;color:var(--g4);font-style:italic;line-height:1.35;margin-bottom:5px;}
+.pca{display:flex;gap:4px;}
+.pcbtn{flex:1;padding:5px;border:none;border-radius:5px;font-size:.6rem;font-weight:700;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;justify-content:center;gap:2px;text-decoration:none;}
+.pbw{background:#22c55e;color:var(--wh);}
+.pbr{background:var(--n8);color:var(--wh);}
+
+/* ══ RESEARCH ══ */
+.res-filters{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;}
+.res-filters select{flex:1;min-width:100px;padding:7px 8px;border:1.5px solid var(--g2);border-radius:7px;font-size:.7rem;outline:none;font-family:var(--font);background:var(--g0);}
+.rcard{border:1px solid var(--g2);border-left:4px solid var(--n5);border-radius:9px;padding:9px 11px;margin-bottom:7px;background:var(--wh);}
+.rcard.rpmc{border-left-color:var(--pmc);}
+.rcard.rjrnl{border-left-color:var(--jrnl);}
+.rcard h4{font-size:.75rem;font-weight:800;color:var(--n8);margin-bottom:3px;line-height:1.35;}
+.rmeta{font-size:.62rem;color:var(--g5);margin-bottom:4px;line-height:1.4;}
+.rmech{font-size:.62rem;color:#374151;background:var(--n0);border-radius:5px;padding:5px 7px;margin-bottom:6px;line-height:1.45;border:1px solid var(--n2);}
+.rcard-links{display:flex;gap:5px;flex-wrap:wrap;}
+.rcard a{display:inline-flex;align-items:center;gap:.2rem;padding:.22rem .55rem;border-radius:5px;font-size:.64rem;font-weight:700;text-decoration:none;}
+.rlink-pmc{background:var(--pmc);color:var(--wh);}
+.rlink-pub{background:var(--n8);color:var(--wh);}
+.rlink-jrnl{background:var(--jrnl);color:var(--wh);}
+.rav{background:#dcfce7;color:#14532d;border-radius:10px;font-size:.56rem;font-weight:700;padding:.06rem .32rem;}
+
+/* ══ ACADEMY ══ */
+.acs-grid{display:grid;gap:8px;}
+.acs-card{background:linear-gradient(135deg,var(--n0),#f5f9ff);border:1px solid var(--n2);border-radius:9px;padding:10px 12px;}
+.acs-card h4{font-size:.75rem;font-weight:800;color:var(--n8);margin-bottom:5px;}
+.acs-card p{font-size:.7rem;color:var(--g6);line-height:1.6;}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+.kpi{background:var(--wh);border:1.5px solid var(--n1);border-radius:9px;padding:9px;text-align:center;}
+.kpi .num{font-size:1.35rem;font-weight:900;color:var(--n7);}
+.kpi .lbl{font-size:.54rem;color:var(--g5);font-weight:700;text-transform:uppercase;margin-top:2px;line-height:1.3;}
+
+/* ══ PRICING ══ */
+.ptbl{width:100%;font-size:.72rem;border-collapse:collapse;}
+.ptbl th{background:var(--n8);color:var(--wh);padding:7px 8px;text-align:left;font-size:.62rem;white-space:nowrap;font-weight:700;}
+.ptbl td{padding:6px 8px;border-bottom:1px solid var(--g2);font-size:.69rem;}
+.ptbl tr:hover td{background:var(--n0);}
+.ptbl td:nth-child(3){font-weight:800;color:var(--n7);}
+
+/* ══ MISC ══ */
+.hidden{display:none;}
+.src-legend{font-size:.62rem;color:var(--g5);margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap;}
+.src-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:3px;}
+.section-label{font-size:.65rem;font-weight:800;color:var(--n7);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 6px;padding-left:2px;}
+
+/* ══ PRINT / PDF ══ */
+@media print{
+  .no-print,
+  .sticky-nav,
+  .ptabs,
+  .cbtns,
+  .rx-acts,
+  .gen-btn,
+  .rst-btn,
+  .res-filters,
+  #view-products,
+  #view-research,
+  #view-academy,
+  #view-pricing,
+  .card:not(#rx-cards){display:none!important;}
+
+  body{background:#fff!important;font-size:10pt;padding:0;margin:0;}
+  .wrap{padding:0;max-width:100%;}
+  .hdr{border-radius:0;margin-bottom:8px;background:var(--n9)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:10px 12px;}
+  .rxout{display:block!important;}
+  .rx-hdr{border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .rx-hdr{background:linear-gradient(135deg,var(--n9),var(--n6))!important;}
+  .pbox{break-inside:avoid;page-break-inside:avoid;}
+  .tit-box{break-inside:avoid;page-break-inside:avoid;background:#f0f7ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .ecs-tag{background:#eff6ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #view-rx{display:block!important;}
+  .card{box-shadow:none;border:none;padding:8px 0;}
+  #rx-cards{display:block!important;}
+}
+
+
+/* ══ ENDOCANN BRANDING UPDATE — bold, larger, clean buttons ══ */
+body{font-size:15.5px;font-weight:600;}
+.wrap{max-width:620px;padding:12px 12px 92px;}
+.hdr{
+  background:linear-gradient(180deg,#ffffff 0%,#fbfcf7 100%);
+  color:#073f2a;
+  border:1.5px solid rgba(184,137,33,.32);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 10px 28px rgba(9,45,31,.12);
+}
+.hdr::before{
+  top:-80px;right:-60px;width:210px;height:210px;
+  background:radial-gradient(circle,rgba(184,137,33,.12),transparent 68%);
+}
+.hdr-row1{align-items:flex-start;margin-bottom:14px;gap:12px;}
+.brand{gap:12px;min-width:0;}
+.bico{
+  width:178px;height:auto;background:transparent;border:0;border-radius:0;box-shadow:none;
+  display:block;flex:0 0 auto;
+}
+.bico img{width:100%;height:auto;display:block;}
+.bname{display:none;}
+.bsub{display:none;}
+.dbadge{
+  margin-top:5px;
+  font-size:1.28rem;
+  font-weight:900;
+  color:#064225;
+  background:transparent;
+  border-left:2px solid rgba(7,63,42,.18);
+  border-top:0;border-right:0;border-bottom:0;
+  border-radius:0;
+  padding:.35rem 0 .35rem 1rem;
+  letter-spacing:-.03em;
+  text-transform:none;
+  white-space:nowrap;
+}
+.cbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cbtn{
+  min-height:48px;
+  justify-content:center;
+  border-radius:14px;
+  font-size:1rem;
+  font-weight:900;
+  letter-spacing:.01em;
+  box-shadow:0 10px 22px rgba(9,45,31,.12);
+}
+.cwa{background:linear-gradient(135deg,#0a6a3c,#16a34a);color:#fff;}
+.cwb{background:#fff;color:#064225;border:2px solid #c89c34;}
+.cprt,.cpdf{background:linear-gradient(180deg,#fff,#f7faf7);color:#064225;border:1.5px solid rgba(6,66,37,.22);}
+.cem{display:none;}
+.sec-title{font-size:1rem;font-weight:900;}
+.fg label{font-size:.72rem;font-weight:900;color:#244b3a;}
+.fg input,.fg select,.fg textarea{font-size:.93rem;font-weight:700;min-height:42px;}
+.chkrow{font-size:.84rem;font-weight:800;}
+.chkrow .chk-text strong{font-size:.86rem;}
+.chkrow .chk-text small{font-size:.72rem;font-weight:700;}
+.pt{font-size:.72rem;font-weight:900;padding:11px 4px;}
+.nb{font-size:.65rem;font-weight:900;padding:8px 2px;}
+.gen-btn{font-size:1.06rem;min-height:58px;}
+.rx-hdr h2{font-size:1.1rem;font-weight:900;}
+.rxval,.pdose{font-size:.88rem;font-weight:700;}
+.pname{font-size:.9rem;font-weight:900;}
+.pcbtn{font-size:.72rem;font-weight:900;min-height:32px;}
+@media(max-width:420px){
+  .bico{width:146px;}
+  .dbadge{font-size:1.05rem;padding-left:.75rem;}
+  .cbtn{font-size:.88rem;min-height:44px;}
+}
+@media print{
+  .hdr{background:#fff!important;color:#064225!important;border-bottom:2px solid #c89c34!important;}
+  .dbadge{color:#064225!important;}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ══ HEADER ══ -->
+<div class="hdr">
+  <div class="hdr-row1">
+    <div class="brand">
+      <div class="bico"><img src="data:image/jpeg;base64,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" alt="EndoCann logo"></div>
+      <div>
+        <div class="bname">EndoCann</div>
+        <div class="bsub">Rooted in Ayurveda. Guided by Science.</div>
+      </div>
+    </div>
+    <span class="dbadge">Digital Clinic</span>
+  </div>
+  <div class="cbtns no-print">
+    <a class="cbtn cwa" href="https://wa.me/919686383132?text=Hi+EndoCann+Digital+Clinic" target="_blank" rel="noopener noreferrer">💬 WhatsApp</a>
+    <a class="cbtn cwb" href="https://endocann.in" target="_blank" rel="noopener noreferrer">🌐 EndoCann.in</a>
+    <button class="cbtn cprt" onclick="doPrint()">🖨 Print Rx</button>
+    <button class="cbtn cpdf" onclick="genPDF()">📄 Save PDF</button>
+  </div>
+</div>
+
+<!-- ══ PROTOCOL TABS — 4 primary ══ -->
+<div class="ptabs no-print" id="ptabs">
+  <div class="pt ap" onclick="selP('pain',this)" id="pt-pain"><div class="pto">💊</div>PAIN</div>
+  <div class="pt"    onclick="selP('cancer',this)" id="pt-cancer"><div class="pto">🎗️</div>CANCER</div>
+  <div class="pt"    onclick="selP('pcod',this)" id="pt-pcod"><div class="pto">👩‍⚕️</div>PCOD</div>
+  <div class="pt"    onclick="selP('stress',this)" id="pt-stress"><div class="pto">🧘</div>STRESS</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     VIEWS
+══════════════════════════════════════ -->
+
+<!-- RX VIEW -->
+<div id="view-rx">
+
+  <div id="rx-cards">
+    <!-- Doctor -->
+    <div class="card">
+      <div class="sec-title">👨‍⚕️ Doctor Details</div>
+      <div class="fr">
+        <div class="fg"><label>Doctor Name</label><input id="docName" placeholder="Dr. Name"></div>
+        <div class="fg"><label>Phone / Clinic</label><input id="docPhone" placeholder="+91 XXXXXXXXXX"></div>
+      </div>
+    </div>
+
+    <!-- Patient -->
+    <div class="card">
+      <div class="sec-title">👤 Patient Details</div>
+      <div class="fr">
+        <div class="fg"><label>Patient Name</label><input id="patName" placeholder="Patient Name"></div>
+        <div class="fg"><label>Phone</label><input id="patPhone" placeholder="+91"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Age (yrs)</label><input id="age" type="number" placeholder="Age"></div>
+        <div class="fg"><label>Weight (kg) *</label><input id="weight" type="number" placeholder="e.g. 65" required></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Gender</label>
+          <select id="gender">
+            <option value="">Select</option>
+            <option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+        <div class="fg"><label>Diagnosis / Free Text</label><input id="diagFree" placeholder="Optional free text Dx"></div>
+      </div>
+    </div>
+
+    <!-- Clinical Parameters -->
+    <div class="card">
+      <div class="sec-title">⚙️ Clinical Parameters</div>
+      <div class="fr">
+        <div class="fg"><label>Protocol</label>
+          <select id="protocol" onchange="onPC()">
+            <option value="">Select protocol</option>
+            <option value="pain">Pain &amp; Anti-inflammatory</option>
+            <option value="cancer">Cancer / Integrative Oncology</option>
+            <option value="pcod">PCOD &amp; Feminine Wellness</option>
+            <option value="stress">Stress &amp; Sleep</option>
+            <option value="resp">Respiratory</option>
+            <option value="skin">Skin / Dermal</option>
+            <option value="gi">GI / Metabolic</option>
+            <option value="classical">Classical Ayurvedic</option>
+          </select>
+        </div>
+        <div class="fg"><label>Indication</label><select id="indication"></select></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label>Severity (1–5)</label>
+          <select id="severity">
+            <option value="1">1 — Mild</option>
+            <option value="2">2 — Moderate-mild</option>
+            <option value="3" selected>3 — Moderate</option>
+            <option value="4">4 — Moderate-severe</option>
+            <option value="5">5 — Severe</option>
+          </select>
+        </div>
+        <div class="fg"><label>Dose Intensity</label>
+          <select id="intensity">
+            <option value="0.5">0.5× Conservative (X/2)</option>
+            <option value="1" selected>1× Standard (X target)</option>
+            <option value="1.5">1.5× Enhanced</option>
+            <option value="2">2× Aggressive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Special Case Checkboxes -->
+      <div class="section-label no-print">⚡ Special Cases / Add-ons</div>
+
+      <label class="chkrow chk-amber no-print">
+        <input type="checkbox" id="highSev">
+        <span class="chk-text">
+          <strong>⚠️ HIGH SEVERITY / Breakthrough Product</strong>
+          <small>Adds 3rd-line concentrated product (CanNoPain) — physician supervised</small>
+        </span>
+      </label>
+
+      <label class="chkrow chk-green no-print">
+        <input type="checkbox" id="addStress">
+        <span class="chk-text">
+          <strong>🧘 Stress / Sleep Add-on (Anandamex)</strong>
+          <small>Adds Anandamex when stress or insomnia overlaps with primary condition</small>
+        </span>
+      </label>
+
+      <label class="chkrow chk-blue no-print">
+        <input type="checkbox" id="addInflam">
+        <span class="chk-text">
+          <strong>🔥 Chronic Inflammation Add-on (CanNoPain)</strong>
+          <small>Adds CanNoPain for refractory or neuropathic pain — mustard seed drop = 50mg</small>
+        </span>
+      </label>
+
+      <label class="chkrow chk-teal no-print">
+        <input type="checkbox" id="addResp">
+        <span class="chk-text">
+          <strong>🫁 Respiratory Overlap (CannaRespo)</strong>
+          <small>Adds CannaRespo syrup when respiratory symptoms co-exist</small>
+        </span>
+      </label>
+
+      <label class="chkrow chk-olive no-print">
+        <input type="checkbox" id="addSkin">
+        <span class="chk-text">
+          <strong>🌿 Skin / Dermal Overlap (CannoDerma)</strong>
+          <small>Adds CannoDerma Ghrita for internal Snehana when dermal symptoms co-exist</small>
+        </span>
+      </label>
+
+      <label class="chkrow chk-indigo no-print">
+        <input type="checkbox" id="addGI">
+        <span class="chk-text">
+          <strong>🐉 GI / Metabolic Add-on (CannaRespo + CR-64)</strong>
+          <small>Adds gut-support combination for GI/metabolic overlap</small>
+        </span>
+      </label>
+
+      <label class="chkrow chk-pink no-print">
+        <input type="checkbox" id="addClassical">
+        <span class="chk-text">
+          <strong>⚕️ Classical Ayurvedic Rasayana (CR-64)</strong>
+          <small>Adds Chaturjataka Rasayana as systemic tonic / homeostasis support</small>
+        </span>
+      </label>
+
+      <div class="fg"><label>Clinical Notes / Remarks</label>
+        <textarea id="notes" placeholder="Follow-up date, diet, other medicines, tolerance monitoring, special instructions…"></textarea>
+      </div>
+    </div><!-- /card -->
+
+    <button class="gen-btn no-print" onclick="genRx()">⚕️ Generate Rx & Dose Plan</button>
+    <button class="rst-btn no-print" onclick="resetAll()">↺ Clear Rx Form</button>
+  </div><!-- /rx-cards -->
+
+  <!-- OUTPUT -->
+  <div class="rxout" id="rxOut">
+    <div class="rx-hdr">
+      <h2>℞ — EndoCann Digital Clinic</h2>
+      <p>Physician-Issued · AYUSH Lic: MP/25E/22/964 · Hempceuticals LLP · EndoCann.in</p>
+    </div>
+    <div class="rx-body" id="rxBody"></div>
+    <div class="rx-acts no-print">
+      <button class="rxbtn rb-pr" onclick="doPrint()">🖨 Print Rx</button>
+      <button class="rxbtn rb-pdf" onclick="genPDF()">📄 Save PDF</button>
+      <button class="rxbtn rb-wa" onclick="sendWA()">💬 Share Rx</button>
+      <button class="rxbtn rb-rs" onclick="resetAll()">↺ New Rx</button>
+    </div>
+  </div>
+
+</div><!-- /view-rx -->
+
+<!-- PRODUCTS VIEW -->
+<div id="view-products" class="hidden">
+  <div class="card">
+    <div class="sec-title">📦 EndoCann AYUSH Products — 15 Formulations</div>
+    <div class="pg" id="prodGrid"></div>
+  </div>
+</div>
+
+<!-- RESEARCH VIEW -->
+<div id="view-research" class="hidden">
+  <div class="card">
+    <div class="sec-title">🔬 Research Evidence <span class="rav" style="font-size:.65rem;margin-left:4px;">✓ Audited PMC/PubMed</span></div>
+    <div class="src-legend">
+      <span><span class="src-dot" style="background:var(--n8)"></span>PubMed</span>
+      <span><span class="src-dot" style="background:var(--pmc)"></span>PMC Full Text</span>
+      <span><span class="src-dot" style="background:var(--jrnl)"></span>Journal</span>
+    </div>
+    <div class="res-filters">
+      <select id="resProt" onchange="onResearchFilterChange()">
+        <option value="">All Research</option>
+        <option value="pain">Pain / Anti-inflammatory</option>
+        <option value="cancer">Cancer / Oncology</option>
+        <option value="pcod">PCOD / Feminine</option>
+        <option value="stress">Stress &amp; Sleep</option>
+        <option value="resp">Respiratory</option>
+        <option value="skin">Skin / Dermal</option>
+        <option value="gi">GI / Metabolic</option>
+        <option value="classical">Classical Ayurvedic</option>
+      </select>
+    </div>
+    <div id="resGrid"></div>
+  </div>
+</div>
+
+<!-- ACADEMY VIEW -->
+<div id="view-academy" class="hidden">
+  <div class="card">
+    <div class="sec-title">🎓 ECS Academy — Clinical Reference</div>
+    <div class="kpi-row">
+      <div class="kpi"><div class="num">8</div><div class="lbl">Protocols</div></div>
+      <div class="kpi"><div class="num">119</div><div class="lbl">Verified Studies</div></div>
+      <div class="kpi"><div class="num">15</div><div class="lbl">Products</div></div>
+      <div class="kpi"><div class="num">24</div><div class="lbl">AYUSH SKUs</div></div>
+    </div>
+    <div class="acs-grid">
+      <div class="acs-card"><h4>What is the ECS?</h4><p>The Endocannabinoid System is a body-wide receptor network regulating pain, sleep, stress, appetite, immune tone, gut motility, and reproductive balance via CB1 (brain/nerves), CB2 (immune), and endogenous ligands anandamide and 2-AG.</p></div>
+      <div class="acs-card"><h4>CB1 · CB2 · TRPV1 · 5-HT1A</h4><p><strong>CB1</strong>: brain, spinal cord — pain, mood, sleep, appetite.<br><strong>CB2</strong>: immune cells, macrophages — inflammation, tumour microenvironment.<br><strong>TRPV1</strong>: pain/heat desensitisation.<br><strong>5-HT1A</strong>: anxiolysis, mood.</p></div>
+      <div class="acs-card"><h4>Aarohana™ Titration Protocol</h4><p><strong>Night 1 (mandatory):</strong> HALF target dose (X/2) — nocte only.<br><strong>Week 1–2:</strong> Continue X/2, assess tolerance.<br><strong>Week 3+:</strong> Advance to full X dose, divided BID.<br><strong>Oncology only:</strong> May escalate to 10X under specialist supervision.</p></div>
+      <div class="acs-card"><h4>Why Full-Spectrum &gt; Isolate</h4><p>Whole-plant Cannabis sativa Linn. includes CBD, THC, CBG, CBN, terpenes (β-caryophyllene CB2-selective, linalool GABA-A, myrcene CB1 potentiator) and cannflavin A/B (30× more potent than aspirin for COX-2). Entourage effect = broader efficacy at lower doses.</p></div>
+      <div class="acs-card"><h4>Routes of Administration</h4><p><strong>Sub-lingual / oral:</strong> Oil drops, Ghrita with warm milk — fastest systemic onset.<br><strong>Topical:</strong> Pain Sutraa, Sleep Sutraa — adjunct, not replacement.<br><strong>Syrup:</strong> CannaRespo with warm water.<br><strong>Gandusha:</strong> Dental Sutraa oil pulling.</p></div>
+      <div class="acs-card"><h4>Clinical Cautions</h4><p>Exercise caution in: pregnancy, breastfeeding, severe psychiatric illness, anticoagulant overlap (CBD + warfarin CYP2C9), significant sedative polypharmacy, severe hepatic impairment. THC-containing formulations require AYUSH-compliant state prescription. Monitor LFT, CBC at 3 months.</p></div>
+      <div class="acs-card"><h4>✅ Corrected Potency Guide</h4><p><strong>CanNoPain:</strong> 50 mg / mustard seed drop (physician supervised)<br><strong>Cannoflam DS:</strong> 10 mg/drop → 3–4 drops = 30–40 mg<br><strong>Prolifex:</strong> 10 mg/drop → 10–20 drops = 100–200 mg<br><strong>Anandamex:</strong> 6 mg/drop → 10–20 drops = 60–120 mg<br><strong>Cannoflam:</strong> 5 mg/drop → 3–4 drops = 15–20 mg<br><strong>Femex28:</strong> 2 mg/drop → 10–20 drops = 20–40 mg<br><strong>CR-64 Rasayana:</strong> 50 mg cannabinoids per 2 g dose</p></div>
+      <div class="acs-card"><h4>Platform Note</h4><p>EndoCann Digital Clinic — mobile physician reference for prescription, product, research, academy and pricing. AYUSH Lic: MP/25E/22/964 · EndoCann.in · +91 9686383132</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING VIEW -->
+<div id="view-pricing" class="hidden">
+  <div class="card">
+    <div class="sec-title">₹ Pricing &amp; SKUs</div>
+    <div style="overflow-x:auto;max-height:520px;">
+      <table class="ptbl">
+        <thead><tr><th>Product</th><th>Size</th><th>₹ Price</th><th>Potency</th></tr></thead>
+        <tbody id="priceBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ══ STICKY BOTTOM NAV ══ -->
+<nav class="sticky-nav no-print">
+  <div class="sticky-nav-inner">
+    <div class="nb on" id="nb-rx" onclick="showV('rx',this)"><span class="nb-ico">🩺</span>Rx</div>
+    <div class="nb" id="nb-products" onclick="showV('products',this)"><span class="nb-ico">📦</span>Products</div>
+    <div class="nb" id="nb-research" onclick="showV('research',this)"><span class="nb-ico">🔬</span>Research</div>
+    <div class="nb" id="nb-academy" onclick="showV('academy',this)"><span class="nb-ico">🎓</span>Academy</div>
+    <div class="nb" id="nb-pricing" onclick="showV('pricing',this)"><span class="nb-ico">₹</span>Pricing</div>
+  </div>
+</nav>
+
+<script>
+/* ══════════════════════════════════════
+   PROTOCOLS — 8 (4 as tabs, 4 via protocol select / special case)
+══════════════════════════════════════ */
+const PROT={
+  pain:{
+    label:"Pain & Anti-inflammatory",
+    inds:["Osteoarthritis","Rheumatoid Arthritis","Chronic Neuropathic Pain","Fibromyalgia","Musculoskeletal Pain","Migraine / Headache","Post-Surgical Pain","Sports Injury","IBD / Gut Inflammation"],
+    primary:{name:"Cannoflam",potency:5,ayush:"Vijaya extract 10% + Coconut Oil 90%",ecs:"CB1/CB2 → NF-κB↓ COX-2↓ TRPV1 desensitisation"},
+    secondary:{name:"Soukhya",potency:null,fixed:"10–20 drops as directed, BID with warm milk",ayush:"Vijaya 24% + Mandukaparni + Musta + Pippali + Peppermint EO 5% + Goghrita 53%",ecs:"CB1/CB2 + adaptogen synergy, analgesic"},
+    tertiary:{name:"CanNoPain",potency:50,ayush:"Cannabis sativa 100% (Vijaya leaf)",ecs:"CB1/CB2 TRPV1↓ FAAH↓ anandamide↑ NF-κB↓"}
+  },
+  cancer:{
+    label:"Cancer / Integrative Oncology",
+    inds:["Cancer-Related Pain","Chemo Support / CIPN","Post-Cancer Management","Cachexia / Appetite Loss","Sleep Disturbance in Oncology","Nausea / Vomiting","Immune Modulation Support","Glioblastoma Adjunct"],
+    primary:{name:"Prolifex",potency:10,ayush:"Vijaya 40% + Guduchi 8% + Bhallataka 0.8% + Lakshmitaru + Goghrita 50%",ecs:"CB1/CB2 → Bcl-2↓ caspase-3↑ VEGF↓ anti-angiogenic ghrelin↑ anti-cachexia 5-HT3↓"},
+    secondary:{name:"Cannoflam DS",potency:10,fixed:"3–4 drops (30–40 mg) nocte — oral or rectal under specialist supervision",ayush:"Vijaya extract 20% + Coconut Oil 80%",ecs:"High-potency CB1/CB2 mitochondrial apoptosis"},
+    tertiary:{name:"CanNoPain",potency:50,ayush:"Cannabis sativa 100%",ecs:"Breakthrough pain CB1/CB2 FAAH↓ — 1 mustard seed drop = 50 mg"}
+  },
+  pcod:{
+    label:"PCOD & Feminine Wellness",
+    inds:["PCOS / PCOD","Dysmenorrhea","Menstrual Irregularity","Hormonal Imbalance","Endometriosis","Infertility Support","Perimenopausal Symptoms","Leucorrhoea"],
+    primary:{name:"Femex28",potency:2,ayush:"Ashoka 10% + Guda 4% + Shatavari 0.5% + Lodhra 0.5% + Vijaya 16% + Goghrita 69%",ecs:"CB1→GnRH pulsatility→LH/FSH normalisation · PGE2↓ CB2/COX-2 · uterine CB1 anti-spasmodic"},
+    secondary:{name:"Kumari Vijaya",potency:null,fixed:"5–8 drops or Yonivarti as directed by gynaecologist",ayush:"27-ingredient taila: Kumari 8.89% + Bhringaraja 17.75% + Vijaya 13.93% + Sesame Oil 11.51%",ecs:"CB1/CB2 vaginal/uterine · ovarian granulosa ECS · opioid-sparing pelvic"},
+    tertiary:{name:"Anandamex",potency:6,ayush:"Brahmi 62.5% + Vacha + Jatamamsi + Vijaya 6.25% + Goghrita 25%",ecs:"FAAH↓ anandamide↑ 5-HT1A cortisol↓"}
+  },
+  stress:{
+    label:"Stress & Sleep / CNS Support",
+    inds:["Insomnia / Disturbed Sleep","Anxiety / GAD","PTSD Symptom Support","Stress & Burnout","ADHD","Depression / Mood Instability","Migraine"],
+    primary:{name:"Anandamex",potency:6,ayush:"Brahmi 62.5% + Vacha 3.125% + Jatamamsi 3.125% + Vijaya 6.25% + Goghrita 25%",ecs:"FAAH↓ → anandamide↑ → 5-HT1A anxiolysis + GABA-A↑ + BDNF↑ + cortisol↓ HPA"},
+    secondary:{name:"Sleep Sutraa",potency:null,fixed:"External — apply 3–5 ml on feet and scalp at bedtime",ayush:"Lavender 8.94% + Rose 5.96% + Vijaya/Hemp 5.96% + Ashwagandha + 21 ingredients",ecs:"CB1 VLPO sedation · linalool GABA-A↑ · cortisol↓ · NREM↑"},
+    tertiary:{name:"Cannoflam",potency:5,ayush:"Vijaya extract 10% + Coconut Oil 90%",ecs:"CB1/CB2 anti-inflammatory adjunct"}
+  },
+  resp:{
+    label:"Respiratory Support",
+    inds:["Upper Respiratory Infection","Bronchitis","Cough / Dry Cough","Asthma Support","Sinusitis","Post-COVID Respiratory"],
+    primary:{name:"CannaRespo",potency:null,fixed:"1–2 tsp (5–10 ml) twice daily — syrup with warm water",ayush:"Vijaya 5% + Pippali + Ela + Twak + Shunti + Pushkarmoola + Tulasi + Kalamegh + Honey 60%",ecs:"CB2 bronchial→IL-4/IL-13↓ mast cell IgE↓ · Yogavahi honey carrier"},
+    secondary:{name:"Cannoflam",potency:5,fixed:"3–4 drops (15–20 mg) nocte",ayush:"Vijaya 10% + Coconut Oil 90%",ecs:"CB2 airway anti-inflammatory NF-κB↓"},
+    tertiary:{name:"Anandamex",potency:6,ayush:"Brahmi + Vacha + Jatamamsi + Vijaya 6.25% + Goghrita",ecs:"5-HT3↓ antiemetic HPA cortisol↓"}
+  },
+  skin:{
+    label:"Skin & Dermal Support",
+    inds:["Psoriasis","Eczema / Atopic Dermatitis","Skin Allergy","Inflammatory Dermatoses","Acne / Seborrhoea","Pitta-Kapha Skin","Wound Healing Support"],
+    primary:{name:"CannoDerma",potency:null,fixed:"10–30 ml internally for 7–14 day Snehana course",ayush:"Vijaya 5% + Daruharidra + Lodhra + Musta + Triphala + Sariva + Goghrita 65%",ecs:"CB2 keratinocyte/mast cell→IL-4↓ IL-31↓ TNF-α↓ · TRPV1 pruritus↓ · sebocyte CB2 anti-acne"},
+    secondary:{name:"Pain Sutraa",potency:null,fixed:"External topical — apply on affected area",ayush:"Cannabis 9.68% + Lavender 5.81% + Eucalyptus 3.87% + Black Pepper",ecs:"Peripheral CB1/CB2 topical · terpene anti-inflammatory"},
+    tertiary:{name:"Cannoflam",potency:5,ayush:"Vijaya 10% + Coconut Oil",ecs:"Systemic CB1/CB2 anti-inflammatory adjunct"}
+  },
+  gi:{
+    label:"GI / Metabolic Support",
+    inds:["IBS / Grahani","Prameha / Diabetes Support","Diarrhoea / Atisara","Digestive Disorders","Metabolic Dysregulation","Liver / Hepatic Support"],
+    primary:{name:"CannaRespo",potency:null,fixed:"1–2 tsp twice daily with warm water",ayush:"Vijaya 5% + Pippali + Ela + Tulasi + Kalamegh + Honey 60%",ecs:"CB1 enteric→intestinal motility/spasm↓ CB2 macrophage colitis↓ 5-HT3↓ Yogavahi"},
+    secondary:{name:"CR-64 (Chaturjataka Rasayana)",potency:null,fixed:"2 g per day with warm milk (50 mg cannabinoids per 2 g)",ayush:"65-ingredient Rasayana: Dalchini + Ela + Vacha + Jatamamsi + Vijaya + 60 classical herbs",ecs:"ECS homeostasis Rasayana · adaptogen · gut immune modulation"},
+    tertiary:{name:"Soukhya",potency:null,fixed:"10–20 drops as directed",ayush:"Vijaya 24% + Mandukaparni + Pippali + Goghrita 53%",ecs:"CB1 gut motility · analgesic adjunct"}
+  },
+  classical:{
+    label:"Classical Ayurvedic (Vijaya-Based)",
+    inds:["Insomnia / Loss of Sleep","Atisara / Diarrhoea","Grahani / IBS","Prameha / Diabetes","Oligospermia / Vajikarana","Vataja Disorders"],
+    primary:{name:"Anandamex",potency:6,ayush:"Brahmi 62.5% + Vacha + Jatamamsi + Vijaya 6.25% + Goghrita 25%",ecs:"Classical ECS Ghrita — CNS calming FAAH↓ GABA-A↑"},
+    secondary:{name:"CR-64 (Chaturjataka Rasayana)",potency:null,fixed:"2 g per day as per Sahasrayoga (50 mg cannabinoids per 2 g)",ayush:"65-ingredient Rasayana: Dalchini + Ela + Vacha + Jatamamsi + Vijaya + 60 herbs",ecs:"Homeostasis Rasayana · immune adaptogen"},
+    tertiary:{name:"Madanakameshwari Rasayana",potency:null,fixed:"2 g per day",ayush:"Dalchini + Ela + Ashwagandha + Safed Musli + Vijaya",ecs:"Vajikarana Rasayana · reproductive tonic"}
+  }
+};
+
+/* ══ PRODUCTS ══ */
+const PRODS=[{"proto":"pain","n":"Cannoflam","alias":"Pain entry oil","use":"Entry anti-inflammatory and analgesic support","pot":"5 mg/drop","dose":"Start 1–4 drops at night; titrate to response","fmt":"Oil","col":"#1565c0"},{"proto":"pain","n":"Soukhya","alias":"Pain support ghrita","use":"Adjunct analgesic / anti-inflammatory support","pot":"Ghrita","dose":"10–20 drops as directed","fmt":"Ghrita","col":"#1565c0"},{"proto":"pain","n":"Cannopain","alias":"Concentrated extract","use":"Refractory pain and high-intensity inflammatory states","pot":"50 mg/mustard-seed drop","dose":"Micro-drop only under physician direction","fmt":"Concentrate","col":"#1565c0"},{"proto":"cancer","n":"Prana (Prolifex)","alias":"Oncology ghrita","use":"Integrative oncology support and post-cancer symptom care","pot":"10 mg/drop","dose":"10–20 drops/day under supervision","fmt":"Ghrita","col":"#b71c1c"},{"proto":"cancer","n":"Cannoflam DS","alias":"High-potency supervised oil","use":"Cancer-supportive high-potency protocol","pot":"10 mg/drop","dose":"3–4 drops at night; supervised escalation only","fmt":"Oil","col":"#b71c1c"},{"proto":"pcod","n":"Ritu (Femex28)","alias":"Feminine wellness ghrita","use":"PCOD, cycle support, endocrine balance","pot":"2 mg/drop","dose":"10–20 drops/day","fmt":"Ghrita","col":"#880e4f"},{"proto":"pcod","n":"Kumari Vijaya","alias":"Gynecological taila","use":"Gynaecological adjunct support","pot":"Taila","dose":"As directed","fmt":"Taila","col":"#880e4f"},{"proto":"stress","n":"Ananda (Anandamex)","alias":"Stress and sleep ghrita","use":"Stress, anxiety, sleep and CNS support","pot":"6 mg/drop","dose":"Start 2–5 drops at bedtime","fmt":"Ghrita","col":"#0d47a1"},{"proto":"stress","n":"Sleep Sutra","alias":"Topical bedtime support","use":"Sleep support add-on","pot":"Topical oil","dose":"External use on feet at bedtime","fmt":"Topical","col":"#0d47a1"},{"proto":"resp","n":"CannaRespo","alias":"Respiratory syrup","use":"Respiratory overlap support","pot":"Syrup","dose":"1–2 tsp/day in divided doses","fmt":"Syrup","col":"#006064"},{"proto":"skin","n":"CannoDerma","alias":"Dermal ghrita","use":"Skin / inflammatory dermal overlap","pot":"Ghrita","dose":"10–30 ml internally for snehana or as directed","fmt":"Ghrita","col":"#33691e"},{"proto":"gi","n":"Chaturjataka Rasayana","alias":"CR64","use":"GI/metabolic/homeostatic rasayana support","pot":"50 mg cannabinoids per 2 g","dose":"2 g/day","fmt":"Lehyam","col":"#e65100"},{"proto":"classical","n":"Madanakameshwari Lehya","alias":"Classical rasayana","use":"Classical vajikarana / nourishment support","pot":"Lehyam","dose":"2 g/day","fmt":"Lehya","col":"#6d4c41"},{"proto":"pain","n":"Pain Sutra","alias":"Topical pain oil","use":"Localized pain support","pot":"Topical oil","dose":"External use only","fmt":"Topical","col":"#1565c0"},{"proto":"skin","n":"Dental Sutra","alias":"Oil pulling support","use":"Adjunct oral care / gandusha support","pot":"Oral oil","dose":"3–5 ml as directed","fmt":"Oral oil","col":"#33691e"}];
+
+/* ══ RESEARCH ══ */
+const RES=[{"proto":"pain","prop":"Anti-inflammatory","ind":"Chronic pain / Arthritis","title":"Cannabidiol for Pain Treatment: Focus on Pharmacology and Mechanism of Action","mech":"Review of anti-inflammatory and analgesic mechanisms relevant to inflammatory and neuropathic pain.","url":"https://pubmed.ncbi.nlm.nih.gov/33238607/","source":"pubmed","pmid":"PMID33238607","v":true},{"proto":"pain","prop":"Anti-inflammatory","ind":"Chronic pain / Arthritis","title":"A Balanced Approach for Cannabidiol Use in Chronic Pain","mech":"Balanced review of chronic pain evidence and therapeutic considerations.","url":"https://pubmed.ncbi.nlm.nih.gov/32425793/","source":"pubmed","pmid":"PMID32425793","v":true},{"proto":"pain","prop":"Anti-inflammatory","ind":"Chronic pain / Arthritis","title":"Cannabidiol (CBD): a killer for inflammatory rheumatoid arthritis synovial fibroblasts","mech":"Shows anti-inflammatory effects in rheumatoid synovial fibroblasts under inflammatory conditions.","url":"https://pubmed.ncbi.nlm.nih.gov/32873774/","source":"pubmed","pmid":"PMID32873774","v":true},{"proto":"pain","prop":"Anti-inflammatory","ind":"Chronic pain / Arthritis","title":"Cannabidiol as a treatment for arthritis and joint pain","mech":"Clinical cohort reporting pain reduction after CBD use in arthritis and joint pain.","url":"https://pubmed.ncbi.nlm.nih.gov/35999581/","source":"pubmed","pmid":"PMID35999581","v":true},{"proto":"skin","prop":"Anti-inflammatory","ind":"Acne / inflammatory dermatoses","title":"The Anti-Inflammatory Effects of Cannabidiol (CBD) on Acne","mech":"CBD and related cannabis constituents reduced inflammatory mediators relevant to acne.","url":"https://pubmed.ncbi.nlm.nih.gov/35535052/","source":"pubmed","pmid":"PMID35535052","v":true},{"proto":"gi","prop":"Anti-inflammatory","ind":"IBD / GI inflammation","title":"The Use of Cannabinoids in the Treatment of Inflammatory Bowel Disease: A Review","mech":"Review of symptom control and inflammatory outcomes in IBD.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC10101654/","source":"pmc","pmid":"PMC10101654","v":true},{"proto":"pain","prop":"Analgesic / Pain modulation","ind":"Chronic pain / Arthritis","title":"Cannabidiol for Pain Treatment: Focus on Pharmacology and Mechanism of Action","mech":"Mechanistic review of analgesic actions via cannabinoid and non-cannabinoid pathways.","url":"https://pubmed.ncbi.nlm.nih.gov/33238607/","source":"pubmed","pmid":"PMID33238607","v":true},{"proto":"pain","prop":"Analgesic / Pain modulation","ind":"Chronic pain / Arthritis","title":"A Balanced Approach for Cannabidiol Use in Chronic Pain","mech":"Summarizes preclinical and clinical pain evidence and cautions.","url":"https://pubmed.ncbi.nlm.nih.gov/32425793/","source":"pubmed","pmid":"PMID32425793","v":true},{"proto":"pain","prop":"Analgesic / Pain modulation","ind":"Chronic pain / Arthritis","title":"Cannabidiol as a treatment for arthritis and joint pain","mech":"Pain score reduction reported in arthritis and joint pain users.","url":"https://pubmed.ncbi.nlm.nih.gov/35999581/","source":"pubmed","pmid":"PMID35999581","v":true},{"proto":"pain","prop":"Analgesic / Pain modulation","ind":"Chronic pain / Arthritis","title":"A Randomized Controlled Trial of Topical Cannabidiol for Thumb Basal Joint Arthritis","mech":"Randomized trial showing improvement in arthritis-related pain outcomes.","url":"https://pubmed.ncbi.nlm.nih.gov/35637038/","source":"pubmed","pmid":"PMID35637038","v":true},{"proto":"pain","prop":"Analgesic / Pain modulation","ind":"Chronic pain / Arthritis","title":"Transdermal cannabidiol reduces inflammation and pain-related behaviours in a rat model of arthritis","mech":"Preclinical topical CBD study relevant to inflammatory pain control.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC4851925/","source":"pmc","pmid":"PMC4851925","v":true},{"proto":"pain","prop":"Analgesic / Pain modulation","ind":"Chronic pain / Arthritis","title":"Therapeutic Effects of Cannabis and Cannabinoids","mech":"National Academies review concluding substantial evidence for chronic pain benefit in adults.","url":"https://www.ncbi.nlm.nih.gov/books/NBK425767/","source":"journal","pmid":"NCBI Bookshelf","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabidiol on the Path from the Lab to the Cancer Patient","mech":"Review of anticancer mechanisms and translational limitations.","url":"https://pubmed.ncbi.nlm.nih.gov/35337163/","source":"pubmed","pmid":"PMID35337163","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Anti-Cancer Potential of Cannabinoids, Terpenes, and Flavonoids Present in Cannabis","mech":"Review of anticancer activity of multiple cannabis constituents.","url":"https://pubmed.ncbi.nlm.nih.gov/32708138/","source":"pubmed","pmid":"PMID32708138","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Mechanisms of Cannabidiol (CBD) in Cancer Treatment","mech":"Review of apoptosis, oxidative stress, and signaling pathways in cancer models.","url":"https://pubmed.ncbi.nlm.nih.gov/35741337/","source":"pubmed","pmid":"PMID35741337","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabidiol as a novel inhibitor of Id-1 gene expression in aggressive breast cancer cells","mech":"Classic study linking CBD with reduced Id-1 expression in aggressive breast cancer cells.","url":"https://pubmed.ncbi.nlm.nih.gov/18025276/","source":"pubmed","pmid":"PMID18025276","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Pathways mediating the effects of cannabidiol on breast cancer cell proliferation, invasion, and metastasis","mech":"Mechanistic breast cancer paper on proliferation and invasion reduction.","url":"https://pubmed.ncbi.nlm.nih.gov/20859676/","source":"pubmed","pmid":"PMID20859676","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Targeting multiple cannabinoid anti-tumour pathways with a novel cannabidiol analogue","mech":"Advanced-stage breast cancer metastasis model with CBD pathway targeting.","url":"https://pubmed.ncbi.nlm.nih.gov/24910342/","source":"pubmed","pmid":"PMID24910342","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"Cannabinoid treatments for anxiety: A systematic review and consideration of sleep disturbance","mech":"Systematic review of anxiety outcomes and frequent overlap with sleep disturbance.","url":"https://pubmed.ncbi.nlm.nih.gov/36370842/","source":"pubmed","pmid":"PMID36370842","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"Clinical and cognitive improvement following full-spectrum, high-cannabidiol treatment for anxiety","mech":"Phase 2 open-label clinical data showing reduced anxiety and improved mood/sleep.","url":"https://pubmed.ncbi.nlm.nih.gov/36352103/","source":"pubmed","pmid":"PMID36352103","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"The Impact of Cannabidiol Treatment on Anxiety Disorders","mech":"Systematic review of randomized clinical trials for anxiety disorders.","url":"https://pubmed.ncbi.nlm.nih.gov/39598172/","source":"pubmed","pmid":"PMID39598172","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"Effects of Cannabinoids on Sleep and their Therapeutic Potential for Sleep Disorders","mech":"Review of cannabinoid effects on sleep architecture and sleep disorders.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC8116407/","source":"pmc","pmid":"PMC8116407","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"Anxiolytic actions of Nardostachys jatamansi via GABAergic modulation","mech":"Botanical anxiolytic evidence relevant to Anandamex-style support.","url":"https://pubmed.ncbi.nlm.nih.gov/29934858/","source":"pubmed","pmid":"PMID29934858","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"Central nervous system depressant activity of Jatamansi rhizome powder","mech":"Sedative/CNS-calming activity relevant to sleep-support logic.","url":"https://pubmed.ncbi.nlm.nih.gov/35813358/","source":"pubmed","pmid":"PMID35813358","v":true},{"proto":"pcod","prop":"Homeostasis / Reproductive-metabolic","ind":"PCOS / feminine wellness","title":"Endocannabinoid system activation may be associated with insulin resistance in women with polycystic ovary syndrome","mech":"Human PCOS paper linking ECS activation with metabolic dysfunction.","url":"https://pubmed.ncbi.nlm.nih.gov/25935491/","source":"pubmed","pmid":"PMID25935491","v":true},{"proto":"pcod","prop":"Homeostasis / Reproductive-metabolic","ind":"PCOS / feminine wellness","title":"Cannabinoids and PPAR Ligands: The Future in Treatment of Polycystic Ovary Syndrome Women with Obesity and Reduced Fertility","mech":"Review of ECS-PPAR biology in PCOS and obesity/fertility overlap.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC9406585/","source":"pmc","pmid":"PMC9406585","v":true},{"proto":"pcod","prop":"Homeostasis / Reproductive-metabolic","ind":"PCOS / feminine wellness","title":"The influence of endocannabinoid system on human reproduction and implications in gynecology","mech":"Review of ECS roles in reproductive physiology and pathology.","url":"https://pubmed.ncbi.nlm.nih.gov/36212249/","source":"pubmed","pmid":"PMID36212249","v":true},{"proto":"pcod","prop":"Homeostasis / Reproductive-metabolic","ind":"PCOS / feminine wellness","title":"Cannabinoid Receptor 1 Gene Polymorphisms and Nonalcoholic Fatty Liver Disease in Women with PCOS","mech":"Association study connecting ECS genetics with PCOS metabolic comorbidity.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC4127238/","source":"pmc","pmid":"PMC4127238","v":true},{"proto":"pcod","prop":"Homeostasis / Reproductive-metabolic","ind":"PCOS / feminine wellness","title":"Endocannabinoid receptor blockade reduces alanine aminotransferase in polycystic ovary syndrome independent of weight loss","mech":"Suggests metabolic relevance of ECS blockade in PCOS.","url":"https://pubmed.ncbi.nlm.nih.gov/28705172/","source":"pubmed","pmid":"PMID28705172","v":true},{"proto":"pcod","prop":"Homeostasis / Reproductive-metabolic","ind":"PCOS / feminine wellness","title":"The influence of endocannabinoid receptor 1 gene variations on anthropometric and metabolic parameters of women with polycystic ovary syndrome","mech":"Genetic-metabolic association study in women with PCOS.","url":"https://pubmed.ncbi.nlm.nih.gov/24971918/","source":"pubmed","pmid":"PMID24971918","v":true},{"proto":"skin","prop":"Dermatologic anti-inflammatory","ind":"Acne / inflammatory dermatoses","title":"The Anti-Inflammatory Effects of Cannabidiol (CBD) on Acne","mech":"Review of CBD-relevant anti-inflammatory effects in acne.","url":"https://pubmed.ncbi.nlm.nih.gov/35535052/","source":"pubmed","pmid":"PMID35535052","v":true},{"proto":"skin","prop":"Dermatologic anti-inflammatory","ind":"Acne / inflammatory dermatoses","title":"Potential of cannabidiol as acne and acne scar treatment","mech":"Review of acne and acne-scar relevance of CBD.","url":"https://pubmed.ncbi.nlm.nih.gov/38904694/","source":"pubmed","pmid":"PMID38904694","v":true},{"proto":"skin","prop":"Dermatologic anti-inflammatory","ind":"Acne / inflammatory dermatoses","title":"Cannabidiol exerts sebostatic and antiinflammatory effects on human sebocytes","mech":"Foundational sebocyte paper supporting acne logic.","url":"https://pubmed.ncbi.nlm.nih.gov/25061872/","source":"pubmed","pmid":"PMID25061872","v":true},{"proto":"skin","prop":"Dermatologic anti-inflammatory","ind":"Acne / inflammatory dermatoses","title":"Development of an Effective Acne Treatment Based on CBD and Herbal Extracts","mech":"Combination topical development paper relevant to acne care.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC10125735/","source":"pmc","pmid":"PMC10125735","v":true},{"proto":"skin","prop":"Dermatologic anti-inflammatory","ind":"Acne / inflammatory dermatoses","title":"Cannabidiol Inhibits Inflammation Induced by Cutibacterium acnes-Derived Extracellular Vesicles","mech":"Inflammation model relevant to acne pathogenesis.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC9379120/","source":"pmc","pmid":"PMC9379120","v":true},{"proto":"skin","prop":"Dermatologic anti-inflammatory","ind":"Acne / inflammatory dermatoses","title":"Cannabis and Cannabinoids in Dermatology: Therapeutic Potential in Inflammatory Skin Conditions","mech":"Dermatology review supporting skin-focused ECS logic.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC9078861/","source":"pmc","pmid":"PMC9078861","v":true},{"proto":"pain","prop":"Anti-inflammatory","ind":"Chronic pain / Arthritis","title":"Therapeutic Effects of Cannabis and Cannabinoids","mech":"National Academies conclusion of substantial evidence for chronic pain in adults.","url":"https://www.ncbi.nlm.nih.gov/books/NBK425767/","source":"journal","pmid":"NCBI Bookshelf","v":true},{"proto":"pain","prop":"Anti-inflammatory","ind":"Chronic pain / Arthritis","title":"Transdermal cannabidiol reduces inflammation and pain-related behaviours in a rat model of arthritis","mech":"Preclinical arthritis model.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC4851925/","source":"pmc","pmid":"PMC4851925","v":true},{"proto":"pain","prop":"Anti-inflammatory","ind":"Chronic pain / Arthritis","title":"cannabinoids in the treatment of rheumatoid arthritis","mech":"Review focused on cannabinoid approaches in rheumatoid arthritis.","url":"https://pubmed.ncbi.nlm.nih.gov/30920973/","source":"pubmed","pmid":"PMID30920973","v":true},{"proto":"pain","prop":"Analgesic / Pain modulation","ind":"Chronic pain / Arthritis","title":"Cannabinoid-based therapy as a future for joint degeneration. Focus on CB2 receptor in arthritis progression and pain","mech":"Review of arthritis progression and pain pathways.","url":"https://pubmed.ncbi.nlm.nih.gov/34050525/","source":"pubmed","pmid":"PMID34050525","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabidiol (CBD) in Cancer Management","mech":"Review of symptom support and integration with orthodox care.","url":"https://pubmed.ncbi.nlm.nih.gov/35205633/","source":"pubmed","pmid":"PMID35205633","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabis and Cannabinoids (PDQ®)","mech":"National Cancer Institute reference on symptom-focused clinical use.","url":"https://www.ncbi.nlm.nih.gov/books/NBK65755.6/","source":"journal","pmid":"NCBI Bookshelf","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Use of Cannabis and Cannabinoids for Treatment of Cancer","mech":"Review of symptom control and emerging mechanistic evidence.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC9600568/","source":"pmc","pmid":"PMC9600568","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"Nardostachys jatamansi protects against cold restraint stress induced behavioral and biochemical abnormalities","mech":"Stress-protective preclinical evidence.","url":"https://pubmed.ncbi.nlm.nih.gov/22903470/","source":"pubmed","pmid":"PMID22903470","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"The Use of Cannabidiol in Treating Psychiatric Disorders","mech":"Systematic review of clinical CBD use in psychiatric disorders.","url":"https://pubmed.ncbi.nlm.nih.gov/38765233","source":"pubmed","pmid":"PMID38765233","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"The Effects of Cannabinoids on Sleep","mech":"Review focused on clinical sleep effects.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC9036386/","source":"pmc","pmid":"PMC9036386","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"The role of cannabis and the endocannabinoid system in sleep and cognition","mech":"Review of ECS effects on sleep and cognition.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC10761597/","source":"pmc","pmid":"PMC10761597","v":true},{"proto":"stress","prop":"Anxiolytic / Sleep modulation","ind":"Anxiety / Sleep disturbance","title":"Cannabis Use and Sleep: Expectations, Outcomes, and the Role of Age","mech":"Review of perceived and observed sleep outcomes.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC7572650/","source":"pmc","pmid":"PMC7572650","v":true},{"proto":"gi","prop":"Anti-inflammatory","ind":"IBD / GI inflammation","title":"Cannabis for inflammatory bowel disease","mech":"Clinical/observational evidence of symptom improvement in Crohn's disease.","url":"https://pubmed.ncbi.nlm.nih.gov/24969296/","source":"pubmed","pmid":"PMID24969296","v":true},{"proto":"gi","prop":"Anti-inflammatory","ind":"IBD / GI inflammation","title":"A Systematic Review With Meta-Analysis of the Efficacy of Cannabinoids in Inflammatory Bowel Disease","mech":"Useful balanced review noting symptom benefits but limited remission data.","url":"https://pubmed.ncbi.nlm.nih.gov/32675631/","source":"pubmed","pmid":"PMID32675631","v":true},{"proto":"gi","prop":"Anti-inflammatory","ind":"IBD / GI inflammation","title":"Cannabinoid Therapeutic Effects in Inflammatory Bowel Diseases","mech":"Review of adjuvant cannabinoid use in Crohn's disease and ulcerative colitis.","url":"https://pmc.ncbi.nlm.nih.gov/articles/PMC9599014/","source":"pmc","pmid":"PMC9599014","v":true},{"proto":"gi","prop":"Anti-inflammatory","ind":"IBD / GI inflammation","title":"Cannabinoids for Inflammatory Bowel Disease: A Scoping Review","mech":"Recent overview of trials and outcomes.","url":"https://pubmed.ncbi.nlm.nih.gov/39029906/","source":"pubmed","pmid":"PMID39029906","v":true},{"proto":"gi","prop":"Anti-inflammatory","ind":"IBD / GI inflammation","title":"Cannabis and Its Potential Protective Role Against Inflammatory Bowel Disease: A Scoping Review","mech":"Review of protective and symptom-control claims in IBD.","url":"https://pubmed.ncbi.nlm.nih.gov/34804696/","source":"pubmed","pmid":"PMID34804696","v":true},{"proto":"cancer","prop":"Mitochondrial / Energy","ind":"Cancer supportive / oncology","title":"Mechanisms of Cannabidiol (CBD) in Cancer Treatment: A Review","mech":"CBD promotes mitochondrial apoptosis: ROS → ΔΨm collapse → caspase-9/3 activation","url":"https://www.mdpi.com/2079-7737/11/6/817","source":"journal","pmid":"MDPI","v":true},{"proto":"cancer","prop":"Mitochondrial / Energy","ind":"Cancer supportive / oncology","title":"The Role of Cannabinoids in Inflammation and Cancer","mech":"THC/CBD induce cancer apoptosis via CB1/CB2; death receptor + mitochondrial pathway","url":"https://www.mdpi.com/1422-0067/22/15/7895","source":"journal","pmid":"MDPI","v":true},{"proto":"cancer","prop":"Mitochondrial / Energy","ind":"Cancer supportive / oncology","title":"Cannabidiol as potential anticancer drug","mech":"Cytochrome c release; ΔΨm collapse; CB2-independent intrinsic mitochondrial pathway","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3579246/","source":"pmc","pmid":"PMC3579246","v":true},{"proto":"cancer","prop":"Entourage Effect / Full Spectrum","ind":"Cancer supportive / oncology","title":"Anti-Cancer Potential of Cannabinoids, Terpenes, and Flavonoids Present in Cannabis","mech":"Cannabinoids inhibit tumor growth; terpenes/flavonoids enhance via entourage effect","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7409346/","source":"pmc","pmid":"PMC7409346","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"CBD Anti-Metastatic and Pro-Apoptotic Activity in Breast Cancer","mech":"CBD inhibits Id-1 gene (metastasis regulator); suppresses EMT; reduces invasion","url":"https://pubmed.ncbi.nlm.nih.gov/17938263/","source":"pubmed","pmid":"PMID17938263","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabidiol promotes apoptosis in human breast cancer cells","mech":"CBD promotes breast cancer apoptosis via CB2; Bcl-2 downregulation; ECS modulation","url":"https://pubmed.ncbi.nlm.nih.gov/21566064/","source":"pubmed","pmid":"PMID21566064","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"CBD as a Potential Anti-Cancer Agent: Review of Clinical Trials","mech":"CBD induces apoptosis via CB2, PPARγ; improved clinical outcomes in multiple cancers","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7546571/","source":"pmc","pmid":"PMC7546571","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"CBD in Oncology: Current and Future Perspectives","mech":"CBD inhibits tumor growth via CB2, PPARγ; synergy with chemotherapy documented","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7511370/","source":"pmc","pmid":"PMC7511370","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabidiol and Cancer: Therapeutic Potentials and Challenges","mech":"CBD's anti-proliferative effects via CB2, TRPV1; apoptosis + cell cycle arrest","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7456558/","source":"pmc","pmid":"PMC7456558","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabidiol on the Path from the Lab to the Cancer Patient","mech":"CBD inhibits cancer proliferation via CB2, PPARγ; modulates ECS signaling","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8951434/","source":"pmc","pmid":"PMC8951434","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabinoids and Cancer: Therapeutic Possibilities","mech":"THC/CBD induce cancer apoptosis via CB1/CB2; broad spectrum anti-tumor effects","url":"https://www.mdpi.com/2072-6694/12/10/2935","source":"journal","pmid":"MDPI","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabinoids as Potential Anticancer Agents","mech":"THC/CBD promote cancer apoptosis via CB1/CB2; broad anti-tumor ECS signaling","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4791144/","source":"pmc","pmid":"PMC4791144","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Synergistic Effects of CBD and Chemotherapy in Cancer Treatment","mech":"CBD enhances chemotherapy apoptosis via CB2; MDR1 efflux pump suppression","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7525662/","source":"pmc","pmid":"PMC7525662","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"CBG as Antiproliferative Agent in Colorectal Cancer","mech":"CBG activates TRPM8 channel; Wnt/β-catenin suppression; TRPM8-mediated differentiation","url":"https://pubmed.ncbi.nlm.nih.gov/24675530/","source":"pubmed","pmid":"PMID24675530","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Antitumor Effects of Cannabidiol in Preclinical Glioma Models","mech":"CBD reduces tumor proliferation via CB2, MAPK inhibition; verified glioma models","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7572340/","source":"pmc","pmid":"PMC7572340","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"CBD as an Inducer of Apoptosis in Human Glioma Cells","mech":"CBD induces glioma apoptosis via CB2, ROS generation; caspase-3 activation","url":"https://pubmed.ncbi.nlm.nih.gov/24373545/","source":"pubmed","pmid":"PMID24373545","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"Cannabidiol as potential anticancer drug","mech":"CBD triggers leukemia apoptosis via CB2-independent ECS pathways; Bax activation","url":"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3579246/","source":"pmc","pmid":"PMC3579246","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"CBD Androgen Receptor Suppression in Prostate Cancer","mech":"Downregulates androgen receptor expression; AR-independent apoptosis via CB2","url":"https://pubmed.ncbi.nlm.nih.gov/23095328/","source":"pubmed","pmid":"PMID23095328","v":true},{"proto":"cancer","prop":"Anti-proliferative / Apoptosis","ind":"Cancer supportive / oncology","title":"THCA as Anti-proliferative Agent in Prostate Cancer","mech":"THCA non-decarboxylated anti-proliferative activity; maintained bioactivity in prostate tissue","url":"https://pubmed.ncbi.nlm.nih.gov/24237856/","source":"pubmed","pmid":"PMID24237856","v":true}];
+
+/* ══ PRICING ══ */
+const SKUS=[{"n":"Cannoflam","s":"10 ml","p":499,"d":"5 mg/drop"},{"n":"Cannoflam","s":"30 ml","p":1199,"d":"5 mg/drop"},{"n":"Cannoflam DS","s":"10 ml","p":"On request","d":"10 mg/drop"},{"n":"Cannoflam DS","s":"30 ml","p":"On request","d":"10 mg/drop"},{"n":"Prana (Prolifex)","s":"10 ml","p":1499,"d":"10 mg/drop"},{"n":"Prana (Prolifex)","s":"30 ml","p":4499,"d":"10 mg/drop"},{"n":"Ritu (Femex28)","s":"10 ml","p":499,"d":"2 mg/drop"},{"n":"Ritu (Femex28)","s":"30 ml","p":1299,"d":"2 mg/drop"},{"n":"Ananda (Anandamex)","s":"10 ml","p":799,"d":"6 mg/drop"},{"n":"Ananda (Anandamex)","s":"30 ml","p":1999,"d":"6 mg/drop"},{"n":"Cannopain","s":"500 mg","p":399,"d":"50 mg/mustard-seed drop"},{"n":"Cannopain","s":"1 g","p":499,"d":"50 mg/mustard-seed drop"},{"n":"Cannopain","s":"5 g","p":2499,"d":"50 mg/mustard-seed drop"},{"n":"CannaRespo","s":"100 ml syrup","p":"On request","d":"Syrup"},{"n":"CannoDerma","s":"Course pack","p":"On request","d":"Ghrita"},{"n":"Chaturjataka Rasayana","s":"25 g","p":899,"d":"50 mg cannabinoids per 2 g"},{"n":"Chaturjataka Rasayana","s":"100 g","p":2799,"d":"50 mg cannabinoids per 2 g"},{"n":"Madanakameshwari Lehya","s":"30 g","p":1199,"d":"Lehyam"},{"n":"Madanakameshwari Lehya","s":"90 g","p":2799,"d":"Lehyam"},{"n":"Pain Sutra","s":"30 ml","p":499,"d":"Topical oil"},{"n":"Pain Sutra","s":"100 ml","p":999,"d":"Topical oil"},{"n":"Sleep Sutra","s":"30 ml","p":599,"d":"Topical oil"},{"n":"Sleep Sutra","s":"100 ml","p":1499,"d":"Topical oil"},{"n":"Dental Sutra","s":"100 ml","p":999,"d":"Oral oil"}];
+
+/* ══ STATE ══ */
+let curP="pain";
+let activeFilterProtocol="";
+
+/* ══ PROTOCOL TABS ══ */
+function normalizeProductName(name=""){
+  return String(name).toLowerCase().replace(/\s+/g," ").trim();
+}
+
+function getProtocolProducts(protoKey){
+  const prot=PROT[protoKey];
+  if(!prot)return [];
+  return [prot.primary?.name,prot.secondary?.name,prot.tertiary?.name].filter(Boolean);
+}
+
+function getActiveProductNames(){
+  return getProtocolProducts(activeFilterProtocol);
+}
+
+function productNameMatches(name, selectedNames){
+  const n=normalizeProductName(name);
+  return selectedNames.some(sel=>{
+    const s=normalizeProductName(sel);
+    return n===s || n.includes(s) || s.includes(n);
+  });
+}
+
+function setResearchProtocolFilter(){
+  const rp=document.getElementById("resProt");
+  if(!rp)return;
+  rp.value=activeFilterProtocol||"";
+}
+
+function applyProtocolVisual(p, el){
+  document.querySelectorAll(".pt").forEach(x=>x.classList.remove("ap","ac","apc","ast"));
+  if(!el)return;
+  if(p==="pain")el.classList.add("ap");
+  if(p==="cancer")el.classList.add("ac");
+  if(p==="pcod")el.classList.add("apc");
+  if(p==="stress")el.classList.add("ast");
+}
+
+function selP(p,el){
+  activeFilterProtocol=p||"";
+  curP=p||curP;
+  document.getElementById("protocol").value=p||"";
+  applyProtocolVisual(p,el);
+  updateInds();
+  renderProds();
+  setResearchProtocolFilter();
+  renderRes();
+  renderPricing();
+}
+
+function onPC(){
+  const selected=document.getElementById("protocol").value;
+  curP=selected||"pain";
+  activeFilterProtocol=selected||"";
+  const m={pain:"pt-pain",cancer:"pt-cancer",pcod:"pt-pcod",stress:"pt-stress"};
+  applyProtocolVisual(selected,m[selected]?document.getElementById(m[selected]):null);
+  updateInds();
+  renderProds();
+  setResearchProtocolFilter();
+  renderRes();
+  renderPricing();
+}
+
+function onResearchFilterChange(){
+  activeFilterProtocol=document.getElementById("resProt").value||"";
+  renderRes();
+}
+
+function updateInds(){
+  const sel=document.getElementById("indication");
+  if(!sel)return;
+  sel.innerHTML="";
+  const protocolKey=document.getElementById("protocol").value || curP || "pain";
+  const indications=(PROT[protocolKey]||PROT.pain).inds;
+  indications.forEach(i=>{
+    const o=document.createElement("option");
+    o.textContent=i;
+    sel.appendChild(o);
+  });
+}
+
+/* ══ RX GENERATION — complete print/PDF/WhatsApp source ══ */
+let LAST_RX_TEXT="";
+let LAST_RX_HTML="";
+
+function val(id, fallback="—"){
+  const el=document.getElementById(id);
+  const v=el ? String(el.value||"").trim() : "";
+  return v || fallback;
+}
+function cleanPhone(v){return String(v||"").replace(/\D/g,"").replace(/^0+/,"");}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function lineJoin(arr){return arr.filter(Boolean).join("\n");}
+
+function buildDosePlan(p, factor, baseMg, role, num, hi=false){
+  if(!p)return null;
+  const potency=parseFloat(p.potency||0);
+  const dropUnit=(p.name==="CanNoPain" || /Cannopain/i.test(p.name)) ? "mustard-seed drop" : "drop";
+  if(potency){
+    const wk1=Math.max(1,Math.ceil((baseMg*factor*0.5)/potency));
+    const wk2=Math.max(wk1,Math.ceil((baseMg*factor*0.75)/potency));
+    const wk3=Math.max(wk2,Math.ceil((baseMg*factor)/potency));
+    return {
+      num, role, hi, name:p.name, potency:`${potency} mg/${dropUnit}`, ayush:p.ayush||"", ecs:p.ecs||"",
+      wk1:`${wk1} ${dropUnit}${wk1>1?"s":""} nocte after food = ~${wk1*potency} mg`,
+      wk2:`${wk2} ${dropUnit}${wk2>1?"s":""}/day; preferably nocte or divided BID if tolerated = ~${wk2*potency} mg`,
+      wk3:`Target: ${wk3} ${dropUnit}${wk3>1?"s":""}/day divided BID or nocte as clinically suitable = ~${wk3*potency} mg`,
+      titration:`Increase by +1 ${dropUnit} every 5–7 days only if tolerated. Hold/reduce for excess drowsiness, dizziness, nausea, palpitations, or paradoxical anxiety.`
+    };
+  }
+  return {
+    num, role, hi, name:p.name, potency:"Fixed AYUSH dose", ayush:p.ayush||"", ecs:p.ecs||"",
+    wk1:p.fixed||"As directed by physician",
+    wk2:p.fixed||"Continue as directed; assess tolerance",
+    wk3:p.fixed||"Continue / titrate as directed by physician",
+    titration:"Use physician-directed titration. Do not self-escalate."
+  };
+}
+
+function productBox(row){
+  return `<div class="pbox${row.hi?" hi":""}">
+    <div class="pname">${row.num}. ${esc(row.name)} <span style="font-size:.65rem;font-weight:500;opacity:.72;">(${esc(row.role)})</span></div>
+    <div class="pdose">
+      <strong>Potency:</strong> ${esc(row.potency)}<br>
+      <strong>Week 1 / Start dose:</strong> ${esc(row.wk1)}<br>
+      <strong>Week 2:</strong> ${esc(row.wk2)}<br>
+      <strong>Week 3 / Target dose:</strong> ${esc(row.wk3)}<br>
+      <strong>Titration:</strong> ${esc(row.titration)}
+      ${row.ayush?`<br><span style="font-size:.62rem;opacity:.76"><strong>Ingredients:</strong> ${esc(row.ayush)}</span>`:""}
+    </div>
+    ${row.ecs?`<div class="ecs-tag">🌿 ${esc(row.ecs)}</div>`:""}
+  </div>`;
+}
+
+function productText(row){
+  return lineJoin([
+    `${row.num}. ${row.name} (${row.role})`,
+    `Potency: ${row.potency}`,
+    `Week 1 / Start dose: ${row.wk1}`,
+    `Week 2: ${row.wk2}`,
+    `Week 3 / Target dose: ${row.wk3}`,
+    `Titration: ${row.titration}`,
+    row.ayush?`Ingredients: ${row.ayush}`:"",
+    row.ecs?`ECS logic: ${row.ecs}`:""
+  ]);
+}
+
+function collectRxRows(prot, baseMg){
+  const rows=[];
+  rows.push(buildDosePlan(prot.primary,1,baseMg,"Primary",1,false));
+  rows.push(buildDosePlan(prot.secondary,0.5,baseMg,"Support",2,false));
+  let n=3;
+  const protocolKey=document.getElementById("protocol").value || curP || "pain";
+  if(document.getElementById("highSev").checked) rows.push(buildDosePlan(prot.tertiary,0.3,baseMg,"High Severity / Breakthrough",n++,true));
+  if(document.getElementById("addStress").checked && protocolKey!=="stress") rows.push(buildDosePlan(PROT.stress.primary,0.5,baseMg,"Stress / Sleep add-on",n++,false));
+  if(document.getElementById("addInflam").checked) rows.push(buildDosePlan(PROT.pain.tertiary,0.3,baseMg,"Inflammation / Neuropathic add-on",n++,true));
+  if(document.getElementById("addResp").checked) rows.push(buildDosePlan(PROT.resp.primary,1,baseMg,"Respiratory add-on",n++,false));
+  if(document.getElementById("addSkin").checked) rows.push(buildDosePlan(PROT.skin.primary,1,baseMg,"Skin / Dermal add-on",n++,false));
+  if(document.getElementById("addGI").checked){
+    rows.push(buildDosePlan(PROT.gi.primary,1,baseMg,"GI / Metabolic add-on",n++,false));
+    rows.push(buildDosePlan(PROT.gi.secondary,1,baseMg,"GI Rasayana add-on",n++,false));
+  }
+  if(document.getElementById("addClassical").checked) rows.push(buildDosePlan(PROT.classical.secondary,1,baseMg,"Classical Rasayana add-on",n++,false));
+  return rows.filter(Boolean);
+}
+
+function genRx(){
+  const w=parseFloat(document.getElementById("weight").value);
+  if(!w||w<1){alert("Please enter patient weight (kg) to calculate Aarohana™ dose.");return false;}
+  const protocolKey=document.getElementById("protocol").value || curP || "pain";
+  const prot=PROT[protocolKey]||PROT.pain;
+  const sev=parseInt(document.getElementById("severity").value||"3",10);
+  const intens=parseFloat(document.getElementById("intensity").value||"1");
+  const today=new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+  const baseMg=Math.round(w*(0.4+sev*0.15)*intens);
+  const rows=collectRxRows(prot,baseMg);
+  const notes=val("notes","Monitor tolerance and clinical response. Reassess in 4 weeks. Do not self-escalate.");
+  const indication=val("indication","");
+  const diagnosis=val("diagFree","");
+  const doctorPhoneText=val("docPhone","Not entered");
+  const patientPhoneText=val("patPhone","Not entered");
+
+  const cautionHtml=`<div class="tit-box">
+    <strong>Caution · Anupana · Hydration</strong><br>
+    · <strong>Anupana:</strong> Warm milk / ghee-based intake for Ghrita; warm water for syrup; after food unless physician instructs otherwise.<br>
+    · <strong>Hydration:</strong> Maintain 2–3 litres water/day unless fluid restricted; add light electrolytes in summer, vomiting, diarrhoea, or poor oral intake.<br>
+    · <strong>Safety:</strong> Avoid alcohol, driving, heavy machinery and sedative stacking during titration. Start at night. Hold dose if excess drowsiness, dizziness, vomiting, palpitations, confusion, or allergy occurs.<br>
+    · <strong>Medical caution:</strong> Physician supervision needed in pregnancy/lactation, severe psychiatric illness, hepatic impairment, anticoagulants, sedatives, epilepsy medicines, chemotherapy/radiation overlap, elderly/frail patients.<br>
+    · <strong>Follow-up:</strong> Review response, sleep, appetite, bowel habits, pain grade and adverse effects weekly for first 3 weeks; then monthly.
+  </div>`;
+
+  const rxHtml=`
+    <div class="rxsec"><div class="rxlbl">Prescribing Physician</div>
+      <div class="rxval"><strong>${esc(val("docName","Doctor"))}</strong><br><strong>Doctor Phone / Clinic:</strong> ${esc(doctorPhoneText)}</div></div>
+    <div class="rxsec"><div class="rxlbl">Patient Details</div>
+      <div class="rxval"><strong>${esc(val("patName","Patient"))}</strong><br>
+      <strong>Patient Phone:</strong> ${esc(patientPhoneText)}<br>
+      Age: ${esc(val("age"))} yrs · Gender: ${esc(val("gender"))} · Weight: ${w} kg</div></div>
+    <div class="rxsec"><div class="rxlbl">Protocol &amp; Clinical Inputs</div>
+      <div class="rxval"><strong>${esc(prot.label)}</strong><br>
+      Indication: ${esc(indication)}${diagnosis?`<br>Diagnosis / Dx notes: ${esc(diagnosis)}`:""}<br>
+      Severity: ${sev}/5 · Intensity: ${intens}× · Aarohana™ base: ~${baseMg} mg · Date: ${today}</div></div>
+    <div class="rxsec"><div class="rxlbl">Detailed Prescription · Product-wise Week Plan</div>${rows.map(productBox).join("")}</div>
+    <div class="rxsec"><div class="rxlbl">Clinical Notes / Remarks</div><div class="rxval">${esc(notes)}</div></div>
+    <div class="tit-box">
+      <strong>Aarohana™ Week-wise Titration Rule</strong><br>
+      · <strong>Week 1:</strong> Start low at night only — roughly half target dose (X/2).<br>
+      · <strong>Week 2:</strong> Continue same or step up gradually if tolerated; no forced escalation.<br>
+      · <strong>Week 3:</strong> Reach target dose only if clinically needed and tolerated; use minimum effective dose.<br>
+      · <strong>Oncology / high severity:</strong> escalation beyond target only under specialist supervision.
+    </div>
+    ${cautionHtml}
+    <div class="tit-box">
+      <strong>EndoCann Digital Clinic · Hempceuticals LLP</strong><br>
+      connect@EndoCann.in · +91 9686383132 · EndoCann.in
+    </div>
+    <div class="rx-sig">
+      <div><div class="sig-line">Physician Signature &amp; Stamp</div></div>
+      <div style="text-align:right;font-size:.62rem;color:var(--g5);">
+        <div style="font-weight:800;color:var(--n8);">${esc(val("docName",""))}</div>
+        <div><strong>Doctor Phone:</strong> ${esc(doctorPhoneText)}</div>
+        <div style="margin-top:4px;font-size:.58rem;">Cannabis sativa Linn. (Vijaya)<br>Physician-directed use only</div>
+      </div>
+    </div>`;
+
+  LAST_RX_HTML=rxHtml;
+  LAST_RX_TEXT=lineJoin([
+    `EndoCann Digital Clinic — Prescription`,
+    `Date: ${today}`,
+    `Doctor: ${val("docName","Doctor")}`,
+    `Doctor Phone / Clinic: ${doctorPhoneText}`,
+    `Patient: ${val("patName","Patient")}`,
+    `Patient Phone: ${patientPhoneText}`,
+    `Age: ${val("age")} | Gender: ${val("gender")} | Weight: ${w} kg`,
+    `Protocol: ${prot.label}`,
+    `Indication: ${indication}`,
+    diagnosis?`Diagnosis / Dx notes: ${diagnosis}`:"",
+    `Severity: ${sev}/5 | Intensity: ${intens}x | Aarohana base: ~${baseMg} mg`,
+    ``,
+    `DETAILED PRESCRIPTION`,
+    rows.map(productText).join("\n\n"),
+    ``,
+    `CLINICAL NOTES`,
+    notes,
+    ``,
+    `CAUTION / ANUPANA / HYDRATION`,
+    `Anupana: Warm milk or ghee-based intake for Ghrita; warm water for syrup; after food unless physician instructs otherwise.`,
+    `Hydration: Maintain 2–3 litres water/day unless fluid restricted; consider electrolytes in heat, vomiting, diarrhoea, or poor intake.`,
+    `Avoid alcohol, driving, heavy machinery and sedative stacking during titration. Start at night. Hold/reduce dose for excess drowsiness, dizziness, vomiting, palpitations, confusion, allergy, or paradoxical anxiety.`,
+    `Medical caution: physician supervision needed in pregnancy/lactation, severe psychiatric illness, hepatic impairment, anticoagulants, sedatives, epilepsy medicines, chemo/radiation overlap, elderly/frail patients.`,
+    `Follow-up: weekly for first 3 weeks, then monthly.`,
+    ``,
+    `EndoCann Digital Clinic | Hempceuticals LLP`,
+    `connect@EndoCann.in | +91 9686383132 | EndoCann.in`
+  ]);
+
+  document.getElementById("rxBody").innerHTML=rxHtml;
+  document.getElementById("rxOut").classList.add("active");
+  setTimeout(()=>document.getElementById("rxOut").scrollIntoView({behavior:"smooth",block:"start"}),100);
+  return true;
+}
+
+/* ══ PDF / PRINT / WHATSAPP — all regenerate complete Rx first ══ */
+function ensureRx(){
+  if(!document.getElementById("weight").value){alert("Enter patient weight first.");return false;}
+  return genRx();
+}
+
+async function genPDF(){
+  if(!ensureRx())return;
+  await new Promise(r=>setTimeout(r,250));
+
+  const rxOut=document.getElementById("rxOut");
+  const rxHdr=rxOut.querySelector('.rx-hdr');
+  const rxBody=document.getElementById('rxBody');
+  const wrapper=document.createElement('div');
+  wrapper.id='pdfExportNode';
+  wrapper.style.position='fixed';
+  wrapper.style.left='-10000px';
+  wrapper.style.top='0';
+  wrapper.style.width='794px';
+  wrapper.style.background='#ffffff';
+  wrapper.style.padding='18px';
+  wrapper.style.zIndex='9999';
+  wrapper.innerHTML=`<div style="font-family:Arial,sans-serif;background:#fff;color:#071c3a;font-size:12px;line-height:1.45;">
+    <style>
+      #pdfExportNode .rxsec{padding:9px 0;border-bottom:1px solid #dde5ee;}
+      #pdfExportNode .rxlbl{font-size:10px;font-weight:800;color:#46586d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+      #pdfExportNode .rxval{font-size:12px;line-height:1.55;}
+      #pdfExportNode strong{font-weight:800;}
+      #pdfExportNode .pbox{background:#f5f9ff;border:1px solid #dde5ee;border-left:4px solid #2070e8;border-radius:8px;padding:8px 10px;margin-bottom:7px;page-break-inside:avoid;}
+      #pdfExportNode .pbox.hi{border-left-color:#0c2d5e;background:#eef5ff;}
+      #pdfExportNode .pname{font-size:13px;font-weight:800;color:#0c2d5e;margin-bottom:4px;}
+      #pdfExportNode .pdose{font-size:11px;line-height:1.55;}
+      #pdfExportNode .ecs-tag{font-size:10px;color:#1a3eaf;background:#eff6ff;border:1px solid #dbeafe;border-radius:5px;padding:4px 6px;margin-top:4px;}
+      #pdfExportNode .tit-box{background:#f0f7ff;border:1px solid #c0d9fd;border-radius:8px;padding:8px 10px;margin-top:8px;font-size:11px;line-height:1.55;page-break-inside:avoid;}
+      #pdfExportNode .rx-sig{margin-top:12px;padding-top:10px;border-top:1px dashed #dde5ee;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px;}
+      #pdfExportNode .sig-line{border-top:1px solid #777;width:160px;margin-top:30px;padding-top:4px;font-size:10px;}
+    
+
+/* ══ ENDOCANN BRANDING UPDATE — bold, larger, clean buttons ══ */
+body{font-size:15.5px;font-weight:600;}
+.wrap{max-width:620px;padding:12px 12px 92px;}
+.hdr{
+  background:linear-gradient(180deg,#ffffff 0%,#fbfcf7 100%);
+  color:#073f2a;
+  border:1.5px solid rgba(184,137,33,.32);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:0 10px 28px rgba(9,45,31,.12);
+}
+.hdr::before{
+  top:-80px;right:-60px;width:210px;height:210px;
+  background:radial-gradient(circle,rgba(184,137,33,.12),transparent 68%);
+}
+.hdr-row1{align-items:flex-start;margin-bottom:14px;gap:12px;}
+.brand{gap:12px;min-width:0;}
+.bico{
+  width:178px;height:auto;background:transparent;border:0;border-radius:0;box-shadow:none;
+  display:block;flex:0 0 auto;
+}
+.bico img{width:100%;height:auto;display:block;}
+.bname{display:none;}
+.bsub{display:none;}
+.dbadge{
+  margin-top:5px;
+  font-size:1.28rem;
+  font-weight:900;
+  color:#064225;
+  background:transparent;
+  border-left:2px solid rgba(7,63,42,.18);
+  border-top:0;border-right:0;border-bottom:0;
+  border-radius:0;
+  padding:.35rem 0 .35rem 1rem;
+  letter-spacing:-.03em;
+  text-transform:none;
+  white-space:nowrap;
+}
+.cbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cbtn{
+  min-height:48px;
+  justify-content:center;
+  border-radius:14px;
+  font-size:1rem;
+  font-weight:900;
+  letter-spacing:.01em;
+  box-shadow:0 10px 22px rgba(9,45,31,.12);
+}
+.cwa{background:linear-gradient(135deg,#0a6a3c,#16a34a);color:#fff;}
+.cwb{background:#fff;color:#064225;border:2px solid #c89c34;}
+.cprt,.cpdf{background:linear-gradient(180deg,#fff,#f7faf7);color:#064225;border:1.5px solid rgba(6,66,37,.22);}
+.cem{display:none;}
+.sec-title{font-size:1rem;font-weight:900;}
+.fg label{font-size:.72rem;font-weight:900;color:#244b3a;}
+.fg input,.fg select,.fg textarea{font-size:.93rem;font-weight:700;min-height:42px;}
+.chkrow{font-size:.84rem;font-weight:800;}
+.chkrow .chk-text strong{font-size:.86rem;}
+.chkrow .chk-text small{font-size:.72rem;font-weight:700;}
+.pt{font-size:.72rem;font-weight:900;padding:11px 4px;}
+.nb{font-size:.65rem;font-weight:900;padding:8px 2px;}
+.gen-btn{font-size:1.06rem;min-height:58px;}
+.rx-hdr h2{font-size:1.1rem;font-weight:900;}
+.rxval,.pdose{font-size:.88rem;font-weight:700;}
+.pname{font-size:.9rem;font-weight:900;}
+.pcbtn{font-size:.72rem;font-weight:900;min-height:32px;}
+@media(max-width:420px){
+  .bico{width:146px;}
+  .dbadge{font-size:1.05rem;padding-left:.75rem;}
+  .cbtn{font-size:.88rem;min-height:44px;}
+}
+@media print{
+  .hdr{background:#fff!important;color:#064225!important;border-bottom:2px solid #c89c34!important;}
+  .dbadge{color:#064225!important;}
+}
+
+</style>
+    <div style="background:#071c3a;color:#fff;padding:14px 16px;border-radius:10px 10px 0 0;">${rxHdr.innerHTML}</div>
+    <div style="border:1px solid #dde5ee;border-top:none;border-radius:0 0 10px 10px;padding:14px 16px;">
+      <div style="background:#f0f7ff;border:1px solid #c0d9fd;border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:12px;line-height:1.6;">
+        <strong>Doctor Phone / Clinic:</strong> ${esc(val("docPhone","Not entered"))}<br>
+        <strong>Patient Phone:</strong> ${esc(val("patPhone","Not entered"))}
+      </div>
+      ${rxBody.innerHTML}
+    </div>
+  </div>`;
+  document.body.appendChild(wrapper);
+
+  const patName=(val("patName","patient")).replace(/[^a-z0-9]+/gi,"_");
+  const today=new Date().toISOString().split("T")[0];
+  const fn=`${patName||'patient'}_EndoCann_Rx_${today}.pdf`;
+
+  try{
+    if(window.html2pdf){
+      await html2pdf().set({
+        margin:[8,6,8,6],
+        filename:fn,
+        image:{type:'jpeg',quality:0.98},
+        html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false,scrollY:0},
+        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
+        pagebreak:{mode:['css','legacy'],avoid:['.pbox','.tit-box']}
+      }).from(wrapper).save();
+    }else{
+      alert('PDF library not loaded. Opening print/save dialog instead.');
+      window.print();
+    }
+  }catch(e){
+    console.error('PDF export failed',e);
+    alert('PDF save failed on this browser. Use Print → Save as PDF.');
+    window.print();
+  }finally{
+    wrapper.remove();
+  }
+}
+
+function doPrint(){
+  if(!ensureRx())return;
+  setTimeout(()=>window.print(),250);
+}
+
+function sendWA(){
+  if(!ensureRx())return;
+  const patientPhone=cleanPhone(val("patPhone","")).slice(-10);
+  const phone=patientPhone.length===10 ? `91${patientPhone}` : "";
+  const url=phone ? `https://wa.me/${phone}?text=${encodeURIComponent(LAST_RX_TEXT)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(LAST_RX_TEXT)}`;
+  window.open(url,"_blank");
+}
+
+function resetAll(){
+  ["docName","docPhone","patName","patPhone","age","weight","notes","diagFree"].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value="";
+  });
+  document.getElementById("severity").value="3";
+  document.getElementById("intensity").value="1";
+  document.getElementById("gender").value="";
+  ["highSev","addStress","addInflam","addResp","addSkin","addGI","addClassical"].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.checked=false;
+  });
+  document.getElementById("rxOut").classList.remove("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ══ PRODUCTS ══ */
+function renderProds(){
+  const g=document.getElementById("prodGrid");if(!g)return;g.innerHTML="";
+  const names=getActiveProductNames();
+  const rows=names.length ? PRODS.filter(p=>productNameMatches(p.n,names)) : PRODS;
+  const ttl=document.querySelector("#view-products .sec-title");
+  if(ttl)ttl.textContent=`📦 EndoCann AYUSH Products${names.length ? " — Selected Protocol" : " — All Products"}`;
+  rows.forEach(p=>{
+    const d=document.createElement("div");d.className="pc";
+    d.innerHTML=`<div class="pch" style="background:${p.col}"><div class="pcn">${p.n}</div><div class="pcp">${p.pot||p.fmt||""}</div></div>
+      <div class="pcb">
+        <div class="pcu">${p.use}</div>
+        <div class="pcd">${p.dose}</div>
+        <div class="pcec">${p.alias ? "Protocol: " + p.alias : (p.fmt ? "Format: " + p.fmt : "")}</div>
+        <div class="pcay">${p.proto ? "Protocol group: " + ((PROT[p.proto]||{}).label||p.proto) : ""}</div>
+        <div class="pca">
+          <a class="pcbtn pbw" href="https://wa.me/919686383132?text=EndoCann+enquiry+about+${encodeURIComponent(p.n)}" target="_blank" rel="noopener noreferrer">💬 Enquire</a>
+          <button class="pcbtn pbr" onclick='viewResByProd(${JSON.stringify(p.n)})'>🔬 Research</button>
+        </div>
+      </div>`;
+    g.appendChild(d);
+  });
+}
+
+function viewResByProd(name){
+  const pm={CanNoPain:"pain",CannaRespo:"resp",CannoDerma:"skin",Soukhya:"pain",Anandamex:"stress",Prolifex:"cancer",Femex28:"pcod","Cannoflam DS":"cancer",Cannoflam:"pain","Kumari Vijaya":"pcod","Pain Sutraa":"skin","Sleep Sutraa":"stress","Dental Sutraa":"skin","CR-64 (Chaturjataka Rasayana)":"gi","Madanakameshwari Rasayana":"pcod"};
+  const k=Object.keys(pm).find(k=>name.includes(k));
+  if(k){
+    activeFilterProtocol=pm[k];
+    document.getElementById("resProt").value=pm[k];
+  }
+  showV("research",document.getElementById("nb-research"));
+  renderRes();
+}
+
+/* ══ RESEARCH ══ */
+function renderRes(){
+  const pf=document.getElementById("resProt").value || activeFilterProtocol || "";
+  const rows=RES.filter(r=>(!pf||r.proto===pf));
+  const srcClass={pmc:"rpmc",pubmed:"",journal:"rjrnl"};
+  const srcLbl={pmc:"PMC Full Text",pubmed:"PubMed Direct",journal:"Journal"};
+  const aClass={pmc:"rlink-pmc",pubmed:"rlink-pub",journal:"rlink-jrnl"};
+  const ttl=document.querySelector("#view-research .sec-title");
+  if(ttl) ttl.innerHTML=`🔬 Research Evidence ${pf ? '<span class="rav" style="font-size:.65rem;margin-left:4px;">Filtered by Protocol</span>' : '<span class="rav" style="font-size:.65rem;margin-left:4px;">All Audited Research</span>'}`;
+  document.getElementById("resGrid").innerHTML=rows.length
+    ?rows.map(r=>`<div class="rcard ${srcClass[r.source]||""}">
+      <h4>${r.title}</h4>
+      <div class="rmeta">${(PROT[r.proto]||{}).label||r.proto} · <strong>${r.prop}</strong> · ${r.ind}
+        <span class="rav">${r.v?"✓ verified":"search"}</span>
+      </div>
+      <div class="rmeta" style="font-style:italic;font-size:.59rem;">${r.pmid||""}</div>
+      <div class="rmech">${r.mech}</div>
+      <div class="rcard-links">
+        <a href="${r.url}" target="_blank" rel="noopener" class="${aClass[r.source]||"rlink-pub"}">🔗 ${srcLbl[r.source]||"Open"}</a>
+      </div>
+    </div>`).join("")
+    :"<div class='rcard'><h4>No matching studies</h4><div class='rmeta'>No research entries for this protocol.</div></div>";
+}
+
+/* ══ PRICING ══ */
+function renderPricing(){
+  const names=getActiveProductNames();
+  const rows=names.length ? SKUS.filter(s=>productNameMatches(s.n,names)) : SKUS;
+  const ttl=document.querySelector("#view-pricing .sec-title");
+  if(ttl)ttl.textContent=`₹ Pricing & SKUs${names.length ? " — Selected Protocol" : " — All Products"}`;
+  document.getElementById("priceBody").innerHTML=rows.map(s=>
+    `<tr><td><strong>${s.n}</strong></td><td>${s.s}</td><td>${String(s.p).startsWith("₹") || String(s.p).toLowerCase().includes("request") ? s.p : "₹"+s.p}</td><td>${s.d||"—"}</td></tr>`
+  ).join("");
+}
+
+/* ══ VIEW SWITCHER ══ */
+function showV(v,el){
+  // update nav buttons
+  document.querySelectorAll(".nb").forEach(b=>b.classList.remove("on"));
+  if(el)el.classList.add("on");
+  // show/hide views
+  ["rx","products","research","academy","pricing"].forEach(id=>{
+    const e=document.getElementById("view-"+id);
+    if(e)e.classList.toggle("hidden",id!==v);
+  });
+  if(v==="research")renderRes();
+  if(v==="pricing")renderPricing();
+  // scroll to top
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+/* ══ INIT ══ */
+document.getElementById("protocol").value="";
+updateInds();
+setResearchProtocolFilter();
+renderProds();
+renderRes();
+renderPricing();
+</script>
+</body>
+</html>
